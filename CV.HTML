@@ -134,9 +134,64 @@
             background-color: #1e90ff;
             color: #fff;
         }
+               /* Password check container styles */
+        .password-container { 
+            text-align: center;
+            background-color: #f0f0f0; /* لون فاتح لخلفية مربع كلمة المرور  */
+            color: #333; /* لون فاتح للنص في مربع كلمة المرور */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            width: 320px;
+            margin: 20px auto; 
+        }
+
+        .password-container h2 {
+            font-size: 2rem;
+            font-family: 'Audiowide', sans-serif;
+            margin-bottom: 15px;
+            color: rgb(32, 35, 44);
+        }
+
+        .input-container {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            background-color: white; /* لون فاتح لخلفية مربع الإدخال  */
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        }
+
+        .input-container img {
+            margin-left: 10px;
+            width: 24px;
+            height: 24px;
+        }
+
+        input[type="password"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            outline: none;
+            text-align: center;
+            color: #333;
+            background-color: transparent;
+            font-family: Arial, sans-serif;
+        }
     </style>
 </head>
 <body>
+    <!-- Password check section -->
+    <div class="password-container">
+        <h2>MOT DE PASSE</h2>
+        <div class="input-container">
+            <img src="https://cdn-icons-png.flaticon.com/512/159/159478.png" alt="Password Icon">
+            <input type="password" id="password" placeholder="**********************************" oninput="checkPassword()">
+        </div>
+    </div>
     <div class="sidebar">
         <a href="#" onclick="showSection('section1')">Verification</a>
         <a href="#" onclick="showSection('section2')">Emails</a>
@@ -193,6 +248,14 @@
     </div>
 
 <script>
+            // Additional functionality from previous code
+    function checkPassword() {
+        const passwordField = document.getElementById("password");
+        if (passwordField.value === "00") {
+            document.querySelector(".password-container").style.display = "none"; 
+            document.getElementById("main-content").style.display = "block"; 
+        }
+    }
     const letters = [
         "Importateur Destinataire",
         "Exportateur Expéditeur",
