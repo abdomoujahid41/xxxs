@@ -264,20 +264,6 @@
     "8207700000": "OUTILS A FRAISER",
     "8207600000": "OUTILS A ALESER"
         };
-           let currentIndexLetter = 0;
-
-    document.addEventListener('keydown', function(event) {
-        if (document.getElementById('section1').classList.contains('active')) { 
-            if (event.key === "ArrowRight") {
-                event.preventDefault(); 
-                nextLetter();
-            } else if (event.key === "ArrowLeft") {
-                event.preventDefault(); 
-                prevLetter();
-            }
-        }
-    });
-
         function showSection(sectionId) {
             const sections = document.querySelectorAll('.content');
             sections.forEach(section => {
