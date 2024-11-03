@@ -141,15 +141,13 @@
         <a href="#" onclick="showSection('section1')">Verification</a>
         <a href="#" onclick="showSection('section2')">Emails</a>
         <a href="#" onclick="showSection('section3')">HS code</a>
-        <a href="#">القسم 4</a>
-        <a href="#">القسم 5</a>
     </div>
 
     <!-- القسم الأول: زر التنقل بين الحروف -->
     <div class="content" id="section1">
         <div class="letter-navigation">
             <button id="prevBtn" onclick="prevLetter()">Start</button>
-            <span id="letterDisplay">READY</span>
+            <span id="letterDisplay">Importateur Destinataire</span>
             <button id="nextBtn" onclick="nextLetter()">Next</button>
         </div>
     </div>
@@ -179,7 +177,9 @@
 <button onclick="copyToClipboard('Bonjour,\n\nMerci de ne pas prendre en compte mon précédent email.\n\nCordialement,\nYassine')" style="color: pink;">Consederation Email</button>
 <button onclick="copyToClipboard('Bonjour,\n\nJe vous écris concernant une différence constatée entre la valeur indiquée en EI et le montant total de la facture.\n\nCordialement,')" style="color: pink;">Différence du montant EI et Facture</button>
 <button onclick="copyToClipboard('Bonjour,\n\nMerci de confirmer que cet arrivage est SP.\n\nCordialement,\nYassine')" style="color: pink;">confirmation de SP</button>
+<button onclick="copyToClipboard('Bonjour,\n\nMerci de confirmer que cet arrivage est partiel.\n\nCordialement,\nYassine')" style="color: pink;">confirmation de partiel</button>
 <button onclick="copyToClipboard('NOUS DDS LA DISPENSE EI M/S SP')" style="color: pink;">SANS PAIEMENT</button>
+<button onclick="copyToClipboard('adresser mon email')" style="color: pink;">adressement email</button>
 
 	   </div>
     </div>
@@ -196,24 +196,26 @@
     const letters = [
         "Importateur Destinataire",
         "Exportateur Expéditeur",
+        "caution",
         "Regime-bureau",
         "Manifest",
-		"Nature colis",
+	"Nature colis",
         "Localisation des marchandises",
         "LTA NUMBER-VOL-DATE",
-        "FRET",
+        "FRET",µ
+        "DEVISE FRET",
         "HAWB ENTRE BAD-FRET-DUM",
         "DEVISE",
         "VALEUR FACTURE",
-		"ORIGINE",
+	"ORIGINE",
         "ACCORD",
         "POIDS NET",
-		"INCOTERMS",
+	"INCOTERMS",
         "SP OU AP",
         "REMISE",
         "POID NET DE EI",
         "VALEUR EI",
-		"REF ENGAGEMENT",
+	"REF ENGAGEMENT",
         "NOMENCLATURE",
         "DESIGNATION",
         "QTE",
@@ -221,8 +223,8 @@
         "PROVENANCE",
         "CALCUL",
         "(NOUS DDS LA DISPENSE EI M/S SP)",
-		"(ANRT)",
-		"(demande document)",
+	"(ANRT)",
+	"(demande document)",
         "(FCT-INCO-ORG-PAGES-MENTION PLI)",
         "(ANNEXE)"
     ];
@@ -262,6 +264,19 @@
     "8207700000": "OUTILS A FRAISER",
     "8207600000": "OUTILS A ALESER"
         };
+           let currentIndexLetter = 0;
+
+    document.addEventListener('keydown', function(event) {
+        if (document.getElementById('section1').classList.contains('active')) { 
+            if (event.key === "ArrowRight") {
+                event.preventDefault(); 
+                nextLetter();
+            } else if (event.key === "ArrowLeft") {
+                event.preventDefault(); 
+                prevLetter();
+            }
+        }
+    });
 
         function showSection(sectionId) {
             const sections = document.querySelectorAll('.content');
