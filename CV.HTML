@@ -11,9 +11,10 @@
             display: flex;
             margin: 0;
             font-family: 'Oxanium', sans-serif;
-            background-image: url('https://www.pixel4k.com/wp-content/uploads/2018/10/android-material-style-tapet-simple-4k_1540751395-2048x1152.jpg');
+            background-image: url('https://papers.co/wallpaper/papers.co-bj03-art-logo-wave-simple-minimal-dark-29-wallpaper.jpg');
             background-size: cover;
             color: #333;
+            height: 100vh; /* ضبط ارتفاع الصفحة على 100% */
         }
         .sidebar {
             width: 200px;
@@ -41,8 +42,9 @@
             display: none;
             justify-content: center;
             align-items: center;
+            flex-direction: column; /* Align items vertically */
             height: 100vh;
-            width: 100%;
+            width: calc(100% - 220px); /* ضبط عرض المحتوى ليتناسب مع المتصفح */
         }
         .content.active {
             display: flex;
@@ -71,6 +73,7 @@
     align-items: center;
     gap: 10px;
     font-size: 1em;
+    margin-bottom: 20px; /* Add some space between navigation and button */
 }
 
 .letter-navigation button {
@@ -100,41 +103,7 @@
     white-space: nowrap; /* هذه الخاصية تمنع النص من الانتقال إلى السطر التالي */
 }
 
-        .autocomplete {
-            position: relative;
-            display: inline-block;
-            width: 400px;
-        }
-        .autocomplete input {
-            width: 100%;
-            padding: 15px;
-            font-size: 1.2em;
-            border: 1px solid #d4d4d4;
-            border-radius: 5px;
-        }
-        .autocomplete-items {
-            position: absolute;
-            background-color: #ffffff;
-            border: 1px solid #d4d4d4;
-            border-radius: 5px;
-            max-height: 150px;
-            overflow-y: auto;
-            z-index: 99;
-            width: 100%;
-        }
-        .autocomplete-items div {
-            padding: 10px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .autocomplete-items div:hover {
-            background-color: #e9e9e9;
-        }
-        .autocomplete-active {
-            background-color: #1e90ff;
-            color: #fff;
-        }
-               /* Password check container styles */
+        /* Password check container styles */
         .password-container { 
             text-align: center;
             background-color: #f0f0f0; /* لون فاتح لخلفية مربع كلمة المرور  */
@@ -186,6 +155,96 @@
         #main-content {
             display: none;
         }
+        .reset-button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #ccc;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block; /*  تجعله يشغل عرض كامل */
+            text-align: center; /*  ضبط محاذاة النص */
+            width: 200px; /* Adjust width as needed */
+        }
+
+        .reset-button:hover {
+            background-color: #aaa;
+        }
+
+        #section3 { /* Specifically target section 3 */
+            display: flex;
+            align-items: center; /* Align vertically */
+            justify-content: center; /* Center horizontally */
+        }
+
+        #section3 .autocomplete {
+            position: relative;
+            display: flex;
+            flex-direction: column; /* Align items vertically */
+            align-items: center; /* Center horizontally */
+            width: 800px; 
+            margin-right: 30px; /* Add some space between input and button */
+        }
+
+        #section3 .autocomplete input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            border: 1px solid #d4d4d4;
+            border-radius: 5px;
+        }
+
+        #section3 .autocomplete-items {
+            position: absolute;
+            background-color: #ffffff;
+            border: 1px solid #d4d4d4;
+            border-radius: 5px;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 99;
+            width: 100%;
+            top: 100%; /* Position suggestions below the input */
+            left: 0; /* Align suggestions to the left edge of the input */
+        }
+
+        #section3 .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #section3 .autocomplete-items div:hover {
+            background-color: #e9e9e9;
+        }
+
+        #section3 .autocomplete-active {
+            background-color: #1e90ff;
+            color: #fff;
+        }
+
+        #section3 .reset-button {
+            width: auto; /* Let the button take its natural width */
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #ccc;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block;
+            text-align: center;
+        }
+
+        #section3 .reset-button:hover {
+            background-color: #aaa;
+        }
+		.content {
+    display: none; /* إخفاء جميع الأقسام افتراضيًا */
+}
+
     </style>
 </head>
 <body>
@@ -212,6 +271,7 @@
                 <span id="letterDisplay">Importateur Destinataire</span>
                 <button id="nextBtn" onclick="nextLetter()">Next</button>
             </div>
+            <button class="reset-button" onclick="resetLetters()">Reset Letters</button> 
         </div>
 
         <!-- القسم الثاني: أزرار الإيميل -->
@@ -248,9 +308,12 @@
 
         <!-- القسم الثالث: حقل الإكمال التلقائي -->
         <div class="content" id="section3">
-            <div class="autocomplete">
-                <input type="text" id="inputField" placeholder="HS CODE">
-                <div id="suggestions" class="autocomplete-items"></div>
+            <div style="display: flex; align-items: center;"> 
+                <div class="autocomplete">
+                    <input type="text" id="inputField" placeholder="HS CODE">
+                    <div id="suggestions" class="autocomplete-items"></div>
+                </div>
+                <button class="reset-button" onclick="resetInputField()">Reset Input</button>
             </div>
         </div>
     </div>
@@ -286,10 +349,11 @@
             "PROVENANCE",
             "CALCUL",
             "(NOUS DDS LA DISPENSE EI M/S SP)",
-	"(ANRT)",
-	"(demande document)",
+         	"(ANRT)",
+         	"(demande document)",
             "(FCT-INCO-ORG-PAGES-MENTION PLI)",
-            "(ANNEXE)"
+            "(ANNEXE)",
+			"(LES NOMS DES ANNEXES)"
         ];
 
         let currentIndex = 0;
@@ -341,13 +405,19 @@
             }
         });
 
-        function showSection(sectionId) {
-            const sections = document.querySelectorAll('.content');
-            sections.forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById(sectionId).classList.add('active');
-        }
+function showSection(sectionId) {
+    // إخفاء جميع الأقسام
+    const sections = document.querySelectorAll('.content');
+    sections.forEach(section => {
+        section.classList.remove('active');
+        section.style.display = 'none'; // إخفاء القسم
+    });
+
+    // إظهار القسم المطلوب فقط
+    const activeSection = document.getElementById(sectionId);
+    activeSection.classList.add('active');
+    activeSection.style.display = 'flex'; // إظهار القسم المطلوب
+}
 
         function prevLetter() {
             if (currentIndex > 0) {
@@ -384,7 +454,7 @@
 
         function checkPassword() {
             const passwordField = document.getElementById("password");
-            if (passwordField.value === "00") {
+            if (passwordField.value === "26") {
                 document.querySelector(".password-container").style.display = "none";
                 document.getElementById("main-content").style.display = "block"; 
                 showSection('section1'); // Show the first section after login
@@ -416,33 +486,40 @@
                     suggestion.textContent = `${code} - ${name}`;
                     suggestion.onclick = () => {
                         inputField.value = `${code} - ${name}`;
-                        suggestionsContainer.innerHTML = ""; // مسح الاقتراحات بعد الاختيار
+                        inputField.focus(); // Keep focus
+                        // Delay hiding to allow the input event to process first
+                        setTimeout(() => {
+                            suggestionsContainer.innerHTML = "";
+                            suggestionsContainer.style.display = 'none';
+                        }, 0);
                     };
                     suggestionsContainer.appendChild(suggestion);
                 }
             }
 
-            // إذا كانت هناك اقتراحات، اعرض الحاوية
-            if (suggestionsContainer.childElementCount > 0) {
-                suggestionsContainer.style.display = 'block'; // اجعل الحاوية مرئية
-            } else {
-                suggestionsContainer.style.display = 'none'; // اخف الحاوية إذا لم توجد اقتراحات
-            }
-        }
+            suggestionsContainer.style.display = suggestionsContainer.childElementCount > 0 ? 'block' : 'none';
 
-        // تأكد من إضافة هذا الحدث لإغلاق القائمة عند النقر في أي مكان آخر
-        document.addEventListener('click', (event) => {
-            if (!suggestionsContainer.contains(event.target) && event.target !== inputField) {
-                suggestionsContainer.innerHTML = ""; // مسح الاقتراحات
-                suggestionsContainer.style.display = 'none'; // اخف الحاوية
-            }
-        });
+        }
 
         inputField.addEventListener("input", updateSuggestions);
         inputField.addEventListener("focus", updateSuggestions);
-        inputField.addEventListener("blur", () => {
-            setTimeout(() => suggestionsContainer.innerHTML = "", 100);
-        });
+
+        function resetLetters() {
+            currentIndex = 0;
+            updateLetterDisplay();
+            updateButtons();
+            // Clear the HS Code input field:
+            inputField.value = ""; 
+            suggestionsContainer.innerHTML = ""; // Clear any open suggestions
+            suggestionsContainer.style.display = 'none'; // Hide the suggestions container
+        }
+
+        function resetInputField() { 
+            inputField.value = "";
+            suggestionsContainer.innerHTML = "";
+            suggestionsContainer.style.display = 'none';
+        }
+		
 
         updateButtons();
     </script>
