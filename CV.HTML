@@ -181,6 +181,11 @@
             background-color: transparent;
             font-family: Arial, sans-serif;
         }
+
+        /* Hide the main content initially */
+        #main-content {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -192,24 +197,26 @@
             <input type="password" id="password" placeholder="**********************************" oninput="checkPassword()">
         </div>
     </div>
-    <div class="sidebar">
-        <a href="#" onclick="showSection('section1')">Verification</a>
-        <a href="#" onclick="showSection('section2')">Emails</a>
-        <a href="#" onclick="showSection('section3')">HS code</a>
-    </div>
 
-    <!-- القسم الأول: زر التنقل بين الحروف -->
-    <div class="content" id="section1">
-        <div class="letter-navigation">
-            <button id="prevBtn" onclick="prevLetter()">Start</button>
-            <span id="letterDisplay">Importateur Destinataire</span>
-            <button id="nextBtn" onclick="nextLetter()">Next</button>
+    <div id="main-content"> <!-- Wrap the rest of the content -->
+        <div class="sidebar">
+            <a href="#" onclick="showSection('section1')">Verification</a>
+            <a href="#" onclick="showSection('section2')">Emails</a>
+            <a href="#" onclick="showSection('section3')">HS code</a>
         </div>
-    </div>
 
-    <!-- القسم الثاني: أزرار الإيميل -->
-    <div class="content" id="section2">
-        <div class="email-buttons">
+        <!-- القسم الأول: زر التنقل بين الحروف -->
+        <div class="content" id="section1">
+            <div class="letter-navigation">
+                <button id="prevBtn" onclick="prevLetter()">Start</button>
+                <span id="letterDisplay">Importateur Destinataire</span>
+                <button id="nextBtn" onclick="nextLetter()">Next</button>
+            </div>
+        </div>
+
+        <!-- القسم الثاني: أزرار الإيميل -->
+        <div class="content" id="section2">
+            <div class="email-buttons">
 <button onclick="copyToClipboard('Bonjour\nVoici la nomenclature\nCordialement\nYassine.')" style="color: darkpurple;">Nomenclature</button>
 <button onclick="copyToClipboard('Bonjour,\n\nMerci de noter que le manifeste n\'est pas encore déposé, merci de faire le nécessaire.\n\nCordialement\nYassine.')" style="color: #4B4B4B ;">Manifest</button>
 <button onclick="copyToClipboard('Bonjour,\n\nMerci de noter que le BAD n\'est pas encore valide au Portnet.\n\nCordialement,\nYassine')" style="color: #4B4B4B;">BAD non Valide</button>
@@ -237,62 +244,56 @@
 <button onclick="copyToClipboard('adresser mon email')" style="color: pink;">adressement email</button>
 
 	   </div>
-    </div>
+        </div>
 
-    <!-- القسم الثالث: حقل الإكمال التلقائي -->
-    <div class="content" id="section3">
-        <div class="autocomplete">
-            <input type="text" id="inputField" placeholder="HS CODE">
-            <div id="suggestions" class="autocomplete-items"></div>
+        <!-- القسم الثالث: حقل الإكمال التلقائي -->
+        <div class="content" id="section3">
+            <div class="autocomplete">
+                <input type="text" id="inputField" placeholder="HS CODE">
+                <div id="suggestions" class="autocomplete-items"></div>
+            </div>
         </div>
     </div>
 
-<script>
-            // Additional functionality from previous code
-    function checkPassword() {
-        const passwordField = document.getElementById("password");
-        if (passwordField.value === "00") {
-            document.querySelector(".password-container").style.display = "none"; 
-            document.getElementById("main-content").style.display = "block"; 
-        }
-    }
-    const letters = [
-        "Importateur Destinataire",
-        "Exportateur Expéditeur",
-        "caution",
-        "Regime-bureau",
-        "Manifest",
+    <script>
+        const letters = [
+            "Importateur Destinataire",
+            "Exportateur Expéditeur",
+            "caution",
+            "Regime-bureau",
+            "Manifest",
 	"Nature colis",
-        "Localisation des marchandises",
-        "LTA NUMBER-VOL-DATE",
-        "FRET",
-        "DEVISE FRET",
-        "HAWB ENTRE BAD-FRET-DUM",
-        "DEVISE",
-        "VALEUR FACTURE",
+            "Localisation des marchandises",
+            "LTA NUMBER-VOL-DATE",
+            "FRET",
+            "DEVISE FRET",
+            "HAWB ENTRE BAD-FRET-DUM",
+            "DEVISE",
+            "VALEUR FACTURE",
 	"ORIGINE",
-        "ACCORD",
-        "POIDS NET",
+            "ACCORD",
+            "POIDS NET",
 	"INCOTERMS",
-        "SP OU AP",
-        "REMISE",
-        "POID NET DE EI",
-        "VALEUR EI",
+            "SP OU AP",
+            "REMISE",
+            "POID NET DE EI",
+            "VALEUR EI",
 	"REF ENGAGEMENT",
-        "NOMENCLATURE",
-        "DESIGNATION",
-        "QTE",
-        "NATURE DE QTE",
-        "PROVENANCE",
-        "CALCUL",
-        "(NOUS DDS LA DISPENSE EI M/S SP)",
+            "NOMENCLATURE",
+            "DESIGNATION",
+            "QTE",
+            "NATURE DE QTE",
+            "PROVENANCE",
+            "CALCUL",
+            "(NOUS DDS LA DISPENSE EI M/S SP)",
 	"(ANRT)",
 	"(demande document)",
-        "(FCT-INCO-ORG-PAGES-MENTION PLI)",
-        "(ANNEXE)"
-    ];
+            "(FCT-INCO-ORG-PAGES-MENTION PLI)",
+            "(ANNEXE)"
+        ];
 
-    let currentIndex = 0;
+        let currentIndex = 0;
+        let currentIndexLetter = 0;
 
         const data = {
     "8807300000": "PIECES AERONAUTIQUE",
@@ -327,19 +328,19 @@
     "8207700000": "OUTILS A FRAISER",
     "8207600000": "OUTILS A ALESER"
         };
-    let currentIndexLetter = 0;
 
-    document.addEventListener('keydown', function(event) {
-        if (document.getElementById('section1').classList.contains('active')) { 
-            if (event.key === "ArrowRight") {
-                event.preventDefault(); 
-                nextLetter();
-            } else if (event.key === "ArrowLeft") {
-                event.preventDefault(); 
-                prevLetter();
+        document.addEventListener('keydown', function(event) {
+            if (document.getElementById('section1').classList.contains('active')) { 
+                if (event.key === "ArrowRight") {
+                    event.preventDefault(); 
+                    nextLetter();
+                } else if (event.key === "ArrowLeft") {
+                    event.preventDefault(); 
+                    prevLetter();
+                }
             }
-        }
-    });
+        });
+
         function showSection(sectionId) {
             const sections = document.querySelectorAll('.content');
             sections.forEach(section => {
@@ -381,53 +382,61 @@
             });
         }
 
+        function checkPassword() {
+            const passwordField = document.getElementById("password");
+            if (passwordField.value === "00") {
+                document.querySelector(".password-container").style.display = "none";
+                document.getElementById("main-content").style.display = "block"; 
+                showSection('section1'); // Show the first section after login
+            }
+        }
+
         const inputField = document.getElementById("inputField");
         const suggestionsContainer = document.getElementById("suggestions");
 
-function updateSuggestions() {
-    const query = inputField.value.toLowerCase();
-    suggestionsContainer.innerHTML = "";
-    if (!query) return;
+        function updateSuggestions() {
+            const query = inputField.value.toLowerCase();
+            suggestionsContainer.innerHTML = "";
+            if (!query) return;
 
-    for (const [code, name] of Object.entries(data)) {
-        const isNumberSearch = !isNaN(query); // تحقق مما إذا كان الاستعلام عددًا
-        let isMatch = false;
+            for (const [code, name] of Object.entries(data)) {
+                const isNumberSearch = !isNaN(query); // تحقق مما إذا كان الاستعلام عددًا
+                let isMatch = false;
 
-        if (isNumberSearch) {
-            // إذا كان البحث عن الأرقام، استخدم startsWith
-            isMatch = code.startsWith(query);
-        } else {
-            // إذا كان البحث عن الأحرف، استخدم includes
-            isMatch = name.toLowerCase().includes(query);
+                if (isNumberSearch) {
+                    // إذا كان البحث عن الأرقام، استخدم startsWith
+                    isMatch = code.startsWith(query);
+                } else {
+                    // إذا كان البحث عن الأحرف، استخدم includes
+                    isMatch = name.toLowerCase().includes(query);
+                }
+
+                if (isMatch) {
+                    const suggestion = document.createElement("div");
+                    suggestion.textContent = `${code} - ${name}`;
+                    suggestion.onclick = () => {
+                        inputField.value = `${code} - ${name}`;
+                        suggestionsContainer.innerHTML = ""; // مسح الاقتراحات بعد الاختيار
+                    };
+                    suggestionsContainer.appendChild(suggestion);
+                }
+            }
+
+            // إذا كانت هناك اقتراحات، اعرض الحاوية
+            if (suggestionsContainer.childElementCount > 0) {
+                suggestionsContainer.style.display = 'block'; // اجعل الحاوية مرئية
+            } else {
+                suggestionsContainer.style.display = 'none'; // اخف الحاوية إذا لم توجد اقتراحات
+            }
         }
 
-        if (isMatch) {
-            const suggestion = document.createElement("div");
-            suggestion.textContent = `${code} - ${name}`;
-            suggestion.onclick = () => {
-                inputField.value = `${code} - ${name}`;
-                suggestionsContainer.innerHTML = ""; // مسح الاقتراحات بعد الاختيار
-            };
-            suggestionsContainer.appendChild(suggestion);
-        }
-    }
-
-    // إذا كانت هناك اقتراحات، اعرض الحاوية
-    if (suggestionsContainer.childElementCount > 0) {
-        suggestionsContainer.style.display = 'block'; // اجعل الحاوية مرئية
-    } else {
-        suggestionsContainer.style.display = 'none'; // اخف الحاوية إذا لم توجد اقتراحات
-    }
-}
-
-// تأكد من إضافة هذا الحدث لإغلاق القائمة عند النقر في أي مكان آخر
-document.addEventListener('click', (event) => {
-    if (!suggestionsContainer.contains(event.target) && event.target !== inputField) {
-        suggestionsContainer.innerHTML = ""; // مسح الاقتراحات
-        suggestionsContainer.style.display = 'none'; // اخف الحاوية
-    }
-});
-
+        // تأكد من إضافة هذا الحدث لإغلاق القائمة عند النقر في أي مكان آخر
+        document.addEventListener('click', (event) => {
+            if (!suggestionsContainer.contains(event.target) && event.target !== inputField) {
+                suggestionsContainer.innerHTML = ""; // مسح الاقتراحات
+                suggestionsContainer.style.display = 'none'; // اخف الحاوية
+            }
+        });
 
         inputField.addEventListener("input", updateSuggestions);
         inputField.addEventListener("focus", updateSuggestions);
