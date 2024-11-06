@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #ffffff, #f8e6ee, #f4c8da, #f0aacc);
+}
+
+        .sidebar {
+            width: 140px;
+            background-color: #434779;
+            padding: 2px;
+            position: fixed;
+            height: 200vh; /* ارتفاع كامل الشاشة */
+            top: 0;
+            left: 0;
+        }
+        .sidebar h2 {
+            margin-top: 0;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar li {
+            margin-bottom: 6px;
+        }
+        .sidebar a {
+            display: block;
+            padding: 20px;
+            text-decoration: none;
+            color: black;
+            background-color: #904779;
+            border-radius: 6px;
+        }
+        .sidebar a:hover {
+            background-color: #cb0179;
+        }
+        .content {
+            margin-left: 140px; /* مسافة من الجانب الأيسر */
+            padding: 10px;
+            margin-top: 10px; /* مسافة من أعلى */
+        }
+        .container {
+            position: relative;
+            width: 1000px; /* عرض الحاوية */
+            height: 400px; /* ارتفاع الحاوية */
+            border: 3px solid green;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .input-group {
+            position: absolute;
+        }
+        /* تحديد مواقع وأبعاد الخانات */
+        #mf-group {
+            top: 20px;
+            left: 20px;
+            width: 250px;
+        }
+        #tx-group {
+            top: 20px;
+            left: 300px;
+            width: 250px;
+        }
+        #fret-group {
+            top: 80px;
+            left: 20px;
+            width: 250px;
+        }
+        #acc-group {
+            top: 140px;
+            left: 20px;
+            width: 250px;
+		}
+        #VAA-group {
+            top: 260px;
+            left: 20px;
+            width: 250px;
+        }
+        label {
+            display: inline-block;
+            width: 50px;
+            margin-right: 10px;
+        }
+        input {
+            width: 150px;
+            height: 25px;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        .result-group {
+            position: absolute;
+        }
+        /* إحداثيات نتائج */
+        #ass-group {
+            top: 80px;
+            left: 580px;
+            width: 250px;
+        }
+        #vad-group {
+            top: 200px;
+            left: 20px;
+            width: 250px;
+		}
+        #COFF-group {
+            top: 320px;
+            left: 20px;
+            width: 250px;
+        }
+        #cof-group {
+            top: 200px;
+            left: 580px;
+            width: 250px;
+        }
+        #mfTx-group {
+            top: 20px;
+            left: 580px;
+            width: 250px;
+        }
+        .result {
+            display: flex; /* استخدام flexbox لتنسيق العناصر */
+            align-items: center; /* مراجعة العناصر رأسياً */
+            width: 250px; /* ضبط عرض كل سطر نتيجة */
+        }
+        .result label {
+            display: inline-block;
+            width: 80px;
+            margin-right: 5px; /* مسافة صغيرة بين العلامة والنتيجة */
+        }
+        .result span {
+            display: inline-block;
+            width: 100px;
+            text-align: right;
+            padding-right: 10px;
+        }
+        .result button {
+            padding: 5px 10px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .error {
+            color: red;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+        }
+        .suggestion-button {
+            margin-left: 10px;
+            padding: 3px 15px;
+            cursor: pointer;
+            position: absolute;
+            top: 0;
+            right: -10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            font-size: 16px;
+            border-radius: 8px;
+        }
+        .suggestion-button:hover {
+            background-color: #45a049;
+        }
+        /* تنسيق قائمة الاقتراحات */
+        #suggestionsList {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            max-height: 100px;
+            overflow-y: auto;
+            display: none; /* بدءًا من الخفي */
+            position: absolute;
+            z-index: 1;
+            background-color: #fff;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .suggestion-item {
+            padding: 5px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #f0f0f0;
+        }
+        #calculator-2 {
+            display: none; /* إخفاء برنامج الحساب الثاني بشكل افتراضي */
+        }
+        .calculator-2 {
+            display: flex;
+        }
+        .calculator-2 .column {
+         display: flex;
+         flex-direction: column; /* تأكد من أن العمود عمودي */
+         align-items: flex-start; /* ضبط العناصر لتكون في البداية (اليسار) */
+         width: 400px;
+        }
+
+        .calculator-2 .result {
+            display: flex; /*  استخدام  flexbox  لضبط  الموقع  */
+            align-items: center; /*  مراجعة  العناصر  رأسياً  */
+            width: 340px; /*  ضبط  عرض  الخانات  */
+            border-bottom: 1px solid black; /*  خط  فاصل  */
+        }
+      
+            margin-right: 40px;
+        } 
+        .calculator-2 .result label {
+            margin-right: 80px; /*  مسافة  بين  الاسم  و  الخانة  */
+        
+        }
+        .calculator-2 .column label {
+            display: inline-block;
+            margin-right: 1px;
+        }
+        .calculator-2 .column input {
+            margin-bottom: 15px;
+            width: 250px; 
+			font-size: 20px;
+			
+        }
+        .calculator-2 .result-column .input-field { /*  تحديد  الـ div  لِـ input  و  label  */
+            display: flex; /*  ضبط  عرض  العناصر  */
+            align-items: center; /*  توسيط  العناصر  رأسياً  */
+            margin-bottom: 10px; /*  إضافة  مسافة  بين  العناصر  */
+			font-size: 20px;
+        }
+        .calculator-2 .total-result-container { /*  تحديد  حاوية  النتيجة  المجمّعة  */
+
+            margin-bottom: 50px;
+        }
+        .calculator-2 .total-result-container span {
+            margin-left: 10px; /*  مسافة  بين  الاسم  و  النتيجة  */
+            font-weight: bold;
+			
+			
+        }
+		
+		
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Project X</h2>
+        <ul>
+            <li><a href="#calculator" onclick="showCalculator()"> VAD TOTAL</a></li>
+            <li><a href="#calculator-2" onclick="showCalculator2()"> VAD ART </a></li>
+
+        </ul>
+    </div>
+
+    <div class="content" id="calculator">  
+        <h1>Calculator</h1>
+
+        <div class="container">
+
+            <!-- خانات الإدخال مع إحداثيات محددة -->
+            <div class="input-group" id="mf-group">
+                <label for="mf">MF:</label>
+                <input type="number" id="mf" oninput="احسب()">
+            </div>
+            <div class="input-group" id="tx-group">
+                <label for="tx">TX:</label>
+                <input type="number" id="tx" onclick="عرضالاقتراحات()" oninput="احسب()"> 
+                <button class="suggestion-button" onclick="حفظالاقتراح()">+</button>
+                <!-- قائمة الاقتراحات -->
+                <div id="suggestionsList" onclick="hideSuggestionsList()">
+                    <div id="suggestionsContainer"></div>
+                </div>
+            </div>
+            <div class="input-group" id="fret-group">
+                <label for="fret">FRET:</label>
+                <input type="number" id="fret" oninput="احسب()">
+            </div>
+            <div class="input-group" id="acc-group">
+                <label for="acc">ACC:</label>
+                <input type="number" id="acc" oninput="احسب()">
+            </div>
+            <div class="input-group" id="VAA-group">
+                <label for="VAA">VAA:</label>
+                <input type="number" id="VAA" oninput="احسب()">
+            </div>
+
+            <!-- قسم النتائج مع إحداثيات لكل نتيجة -->
+            <div class="result-group" id="ass-group">
+                <div class="result">
+                    <label>ASS:</label> <span id="assResult">0</span>
+                    <button onclick="copyToClipboard('assResult')">Copy</button>
+                </div>
+            </div>
+            <div class="result-group" id="vad-group">
+                <div class="result">
+                    <label>VAD:</label> <span id="vadResult">0</span>
+                    <button onclick="copyToClipboard('vadResult')">Copy</button>
+                </div>
+            </div>
+            <div class="result-group" id="COFF-group">
+                <div class="result">
+                    <label>COFF:</label> <span id="COFFResult">0</span>
+                    <button onclick="copyToClipboard('COFFResult')">Copy</button>
+                </div>
+            </div>
+            <div class="result-group" id="cof-group">
+                <div class="result">
+                    <label>COF:</label> <span id="cofResult">0.0000</span>
+                    <button onclick="copyToClipboard('cofResult')">Copy</button>
+                </div>
+            </div>
+            <div class="result-group" id="mfTx-group">
+                <div class="result">
+                    <label>MF * TX:</label> <span id="mfTxResult">0</span>
+                    <button onclick="copyToClipboard('mfTxResult')">Copy</button>
+                </div>
+            </div>
+			
+
+            <div class="error" id="errorLabel"></div>
+
+        </div>
+    </div>
+
+    <div class="content" id="calculator-2">  
+        
+
+        <div class="calculator-2">
+            <div class="column">
+                <div class="total-result-container">
+                     <span style="font-size: 15px; color: red;">MF T</span> <!-- حجم الخط ولون MF -->
+                     <span class="total-result" id="totalMF" style="font-size: 30px; color: red;">0.00</span> 
+					  </br>
+                    <span style="font-size: 15px">✔✔✔</span> 
+                    <span class="total-result" id="mfResult2" style="font-size: 30px">   0.00</span> 
+                </div>
+				</br>
+				</br>
+                <div class="input-field" > 
+                    <label>MF 1:</label> <input type="number" id="input1" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 2:</label> <input type="number" id="input2" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 3:</label> <input type="number" id="input3" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 4:</label> <input type="number" id="input4" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 5:</label> <input type="number" id="input5" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 6:</label> <input type="number" id="input6" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 7:</label> <input type="number" id="input7" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 8:</label> <input type="number" id="input8" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 9:</label> <input type="number" id="input9" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 10:</label> <input type="number" id="input10" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 11:</label> <input type="number" id="input11" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 12:</label> <input type="number" id="input12" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 13:</label> <input type="number" id="input13" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 14:</label> <input type="number" id="input14" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 15:</label> <input type="number" id="input15" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 16:</label> <input type="number" id="input16" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 17:</label> <input type="number" id="input17" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 18:</label> <input type="number" id="input18" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 19:</label> <input type="number" id="input19" oninput="calculate2()">
+                </div>
+                <div class="input-field"> 
+                    <label>MF 20:</label> <input type="number" id="input20" oninput="calculate2()">
+                </div>
+            </div>
+           
+				
+             <div class="column">			 
+			   </br>
+               </br>
+			   </br> 
+			   </br>
+			   </br> 
+			   </br>
+			   </br> 
+			   </br>
+			   </br>
+			   </br>
+			    <span>C O F</span>
+             <input type="number" id="input21" oninput="calculate2()">
+             <button onclick="handlePaste()">Paste</button>
+             </div>
+            <div class="result-column">
+               
+            <div class="total-result-container">
+                   <span style="font-size: 15px; color: red;">VAD T</span> <!-- حجم الخط ولون MF -->
+                     <span class="total-result" id="totalVAD" style="font-size: 30px; color: red;">0.00</span> 
+					  </br>
+                    <span style="font-size: 15px">✔✔✔..</span> 
+                    <span class="total-result" id="vadResult2" style="font-size: 30px">   0.00</span>  
+                </div>
+               </br> 
+			   </br>
+                <div class="result" id="result1">
+                    <div class="input-field"> 
+                        <label>VAD 1:</label> <span class="result-value" id="resultValue1">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue1')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result2">
+                    <div class="input-field"> 
+                        <label>VAD 2:</label> <span class="result-value" id="resultValue2">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue2')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result3">
+                    <div class="input-field"> 
+                        <label>VAD 3:</label> <span class="result-value" id="resultValue3">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue3')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result4">
+                    <div class="input-field"> 
+                        <label>VAD 4:</label> <span class="result-value" id="resultValue4">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue4')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result5">
+                    <div class="input-field"> 
+                        <label>VAD 5:</label> <span class="result-value" id="resultValue5">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue5')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result6">
+                    <div class="input-field"> 
+                        <label>VAD 6:</label> <span class="result-value" id="resultValue6">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue6')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result7">
+                    <div class="input-field"> 
+                        <label>VAD 7:</label> <span class="result-value" id="resultValue7">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue7')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result8">
+                    <div class="input-field"> 
+                        <label>VAD 8:</label> <span class="result-value" id="resultValue8">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue8')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result9">
+                    <div class="input-field"> 
+                        <label>VAD 9:</label> <span class="result-value" id="resultValue9">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue9')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result10">
+                    <div class="input-field"> 
+                        <label>VAD 10:</label> <span class="result-value" id="resultValue10">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue10')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result11">
+                    <div class="input-field"> 
+                        <label>VAD 11:</label> <span class="result-value" id="resultValue11">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue11')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result12">
+                    <div class="input-field"> 
+                        <label>VAD 12:</label> <span class="result-value" id="resultValue12">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue12')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result13">
+                    <div class="input-field"> 
+                        <label>VAD 13:</label> <span class="result-value" id="resultValue13">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue13')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result14">
+                    <div class="input-field"> 
+                        <label>VAD 14:</label> <span class="result-value" id="resultValue14">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue14')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result15">
+                    <div class="input-field"> 
+                        <label>VAD 15:</label> <span class="result-value" id="resultValue15">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue15')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result16">
+                    <div class="input-field"> 
+                        <label>VAD 16:</label> <span class="result-value" id="resultValue16">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue16')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result17">
+                    <div class="input-field"> 
+                        <label>VAD 17:</label> <span class="result-value" id="resultValue17">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue17')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result18">
+                    <div class="input-field"> 
+                        <label>VAD 18:</label> <span class="result-value" id="resultValue18">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue18')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result19">
+                    <div class="input-field"> 
+                        <label>VAD 19:</label> <span class="result-value" id="resultValue19">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue19')">Copy</button>
+                    </div>
+                </div>
+                <div class="result" id="result20">
+                    <div class="input-field"> 
+                        <label>VAD 20:</label> <span class="result-value" id="resultValue20">0</span>
+                        <button class="result-button" onclick="copyToClipboard('resultValue20')">Copy</button>
+                    </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // مصفوفة لحفظ الاقتراحات
+        let suggestions = [];
+
+        // دالة الحساب الأساسية
+        function احسب() {
+            const mf = parseFloat(document.getElementById('mf').value.replace(',', '.')) || 0;
+            const tx = parseFloat(document.getElementById('tx').value.replace(',', '.')) || 0;
+            const fret = parseFloat(document.getElementById('fret').value.replace(',', '.')) || 0;
+            const acc = parseFloat(document.getElementById('acc').value.replace(',', '.')) || 0;
+            const VAA = parseFloat(document.getElementById('VAA').value.replace(',', '.')) || 1;
+
+            //  التحقق من صحة الإدخال:
+            if (isNaN(mf) || isNaN(tx) || isNaN(fret) || isNaN(acc) || isNaN(VAA)) {
+                document.getElementById('errorLabel').textContent = "الرجاء إدخال أرقام صحيحة في جميع الحقول.";
+                return;
+            }
+
+            try {
+                const e = mf * tx + fret;
+                const ass = Math.ceil(e * 0.3 / 100);
+                const vad = Math.ceil(e + ass + acc);
+                const cof = vad / mf;
+                const COFF = vad / VAA;
+                const mfTxResult = Math.ceil(mf * tx);
+
+                document.getElementById('assResult').textContent = ass;
+                document.getElementById('vadResult').textContent = vad;
+                document.getElementById('COFFResult').textContent = COFF.toFixed(4); // أربعة أرقام عشرية
+                document.getElementById('cofResult').textContent = cof.toFixed(4); // أربعة أرقام عشرية
+                document.getElementById('mfTxResult').textContent = mfTxResult;
+                document.getElementById('errorLabel').textContent = "";
+
+                // تحديث قيم MF و VAD في القسم الثاني
+                document.getElementById('mfResult2').textContent = mf.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); 
+                document.getElementById('vadResult2').textContent = vad.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
+                calculate2();
+            } catch (error) {
+                document.getElementById('errorLabel').textContent = "حدث خطأ في الحساب.";
+            }
+        }
+
+        // دالة نسخ النص إلى الحافظة
+        function copyToClipboard(elementId) {
+            const textToCopy = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(textToCopy); // بدون رسالة
+        }
+
+        // دالة حفظ الاقتراح
+        function حفظالاقتراح() {
+            let txValue = document.getElementById('tx').value.trim();
+            txValue = txValue.replace(',', '.');
+
+            if (txValue !== '' && !suggestions.includes(txValue)) {
+                suggestions.push(txValue);
+                updateSuggestionsList();
+            }
+        }
+
+         // دالة تحديث قائمة الاقتراحات
+        function updateSuggestionsList() {
+            const suggestionsContainer = document.getElementById('suggestionsContainer');
+            suggestionsContainer.innerHTML = ""; // مسح القائمة الحالية
+
+            suggestions.forEach(suggestion => {
+                const suggestionItem = document.createElement('div');
+                suggestionItem.classList.add('suggestion-item');
+                // تغيير هنا لـ toLocaleString('en-US')
+                suggestionItem.textContent = suggestion.replace('.', ','); 
+                suggestionItem.onclick = function() {
+                    document.getElementById('tx').value = suggestion;
+                    احسب(); // حساب النتيجة عند اختيار الاقتراح
+                    hideSuggestionsList(); // إخفاء قائمة الاقتراحات بعد الاختيار
+                };
+
+                suggestionsContainer.appendChild(suggestionItem);
+            });
+
+            // إظهار قائمة الاقتراحات
+            document.getElementById('suggestionsList').style.display = 'block';
+        }
+
+        // دالة عرض قائمة الاقتراحات عند النقر على وسط حقل TX
+        function عرضالاقتراحات() {
+            updateSuggestionsList();
+        }
+
+        // دالة إخفاء قائمة الاقتراحات
+        function hideSuggestionsList() {
+            document.getElementById('suggestionsList').style.display = 'none';
+        }
+
+        // إضافة استجابة للنقر خارج قائمة الاقتراحات
+        document.addEventListener('click', function(event) {
+            const suggestionsList = document.getElementById('suggestionsList');
+            const txInput = document.getElementById('tx');
+
+            // التحقق مما إذا كان النقر خارج قائمة الاقتراحات أو خارج حقل TX
+            if (event.target !== suggestionsList && event.target !== txInput) {
+                suggestionsList.style.display = 'none';
+            }
+        });
+        function handlePaste() {
+         navigator.clipboard.readText().then(text => {
+        document.getElementById("input21").value = text;
+        calculate2();
+        }).catch(err => {
+        console.error('Failed to read clipboard contents: ', err);
+        });
+        }
+        // دالة حساب برنامج الحساب الثاني
+function calculate2() {
+    let inputValues = [];
+    for (let i = 1; i <= 20; i++) {
+        inputValues.push(parseFloat(document.getElementById(`input${i}`).value) || 0);
+    }
+
+    let multiplier = parseFloat(document.getElementById(`input21`).value) || 0;
+
+    let totalMF = 0;
+    let totalVAD = 0; // Initialize totalVAD outside the loop
+
+   for (let i = 0; i < 20; i++) {
+    let result = inputValues[i] * multiplier;
+    result = Math.round(result); // تقريبه إلى أقرب عدد صحيح
+    
+    // تنسيق النتيجة لتكون دوماً تحتوي على فاصلة عشرية 00
+    let formattedResult = result.toFixed(2); 
+
+    // إضافة فواصل الآلاف للأرقام الكبيرة
+    formattedResult = parseFloat(formattedResult).toLocaleString(); 
+
+    // تحديث النص في العنصر مع التنسيق
+    document.getElementById(`resultValue${i + 1}`).textContent = formattedResult;
+
+    totalMF += inputValues[i];
+    totalVAD += result; // إضافة النتيجة المحسوبة إلى totalVAD
+}
+
+
+    document.getElementById('totalMF').textContent = totalMF.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    document.getElementById('totalVAD').textContent = totalVAD.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        }
+		
+        // دالة لإظهار قسم Calculator
+        function showCalculator() {
+            document.getElementById('calculator').style.display = 'block';
+            document.getElementById('calculator-2').style.display = 'none';
+        }
+
+        // دالة لإظهار قسم برنامج الحساب الثاني
+        function showCalculator2() {
+            document.getElementById('calculator').style.display = 'none';
+            document.getElementById('calculator-2').style.display = 'block';
+        }
+		
+
+        // قم بتغيير الـ href في روابط الشريط الجانبي 
+        // لتنفيذ الدوال المقابلة عند النقر
+        document.querySelector('.sidebar a[href="#calculator"]').onclick = showCalculator;
+        document.querySelector('.sidebar a[href="#calculator-2"]').onclick = showCalculator2;
+		
+    </script>
+</body>
+</html> 
+
+
+
+
+
