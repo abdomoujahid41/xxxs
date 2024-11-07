@@ -12,57 +12,108 @@ body {
 background-color: rgb(135, 206, 250);
 
 
-}
+/* الشريط الجانبي */
 .sidebar {
-    width: 180px;
-    background-color: #2f3257; /* لون داكن أكثر للاحترافية */
-    padding: 10px;
+    width: 200px; /* تقليل العرض قليلاً */
+    background-color: #323f5d; /* لون داكن واحترافي أكثر */
+    padding: 1px;
     position: fixed;
     height: 100vh; /* ارتفاع الشاشة بالكامل */
     top: 0;
     left: 0;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3); /* ظل لجعل الشريط بارزًا */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* ظل خفيف وبسيط */
+    z-index: 9999;
+    animation: slideIn 0.6s ease-out forwards;
 }
 
+/* حركة انزلاقية للشريط الجانبي */
+@keyframes slideIn {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* عنوان الشريط الجانبي */
 .sidebar h2 {
     margin-top: 0;
-    color: #fff; /* لون النص الأبيض */
-    font-family: Arial, sans-serif;
+    color: #fff;
+    font-family: 'Hubot Sans', sans-serif;
     text-align: center;
+    font-size: 30px;
+    letter-spacing: 1px;
+    animation: fadeInTitle 1s ease-out forwards;
 }
 
+/* حركة ظهور العنوان */
+@keyframes fadeInTitle {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* قائمة الشريط الجانبي */
 .sidebar ul {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
+/* العناصر داخل الشريط الجانبي */
 .sidebar li {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    animation: fadeIn 0.8s ease-out forwards;
 }
 
+/* حركة ظهور للعناصر */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* الروابط داخل الشريط الجانبي */
 .sidebar a {
     display: block;
-    padding: 15px;
+    padding: 18px;
     text-decoration: none;
-    color: #fff; /* لون نص الأبيض */
-    background-color: #5c5e98; /* لون الخلفية الأساسي للأزرار */
-    border-radius: 6px;
+    color: #fff; /* نص أبيض */
+    background-color: #4b5d75; /* لون خلفية احترافي، مائل للأزرق الرمادي */
+    border-radius: 8px;
     font-weight: bold;
     text-align: center;
-    transition: background-color 0.3s ease, transform 0.2s ease; /* تأثير انتقال */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15); /* ظل خفيف للأزرار */
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* ظل بسيط للأزرار */
 }
 
+/* تغيير اللون عند التمرير */
 .sidebar a:hover {
-    background-color: #797bbe; /* تغيير لون الخلفية عند التمرير */
-    transform: scale(1.05); /* تكبير خفيف عند التمرير */
+    background-color: #3a4a63; /* لون أغمق عند التمرير */
+    transform: scale(1.05); /* تكبير بسيط عند التمرير */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* ظل أكبر قليلاً */
 }
 
+/* تغيير اللون عند النقر */
 .sidebar a:active {
-    background-color: #434779; /* لون أغمق عند النقر */
-    transform: scale(0.98); /* تصغير خفيف عند النقر */
+    background-color: #2c3d53; /* لون أغمق عند النقر */
+    transform: scale(0.98); /* تصغير بسيط عند النقر */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); /* ظل أخف */
 }
+
+
+
 
         .content {
             margin-left: 200px; /* مسافة من الجانب الأيسر */
@@ -273,23 +324,190 @@ background-color: rgb(135, 206, 250);
         .result-button.active {
             background-color: #4CAF50; /* اللون الأخضر */
         }
-		
-		
+		         #passwordPage {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100; /* Ensures it's on top */
+            font-family: Arial, sans-serif;
+        }
+/* إضافة الخط Hubot Sans */
+@import url('https://fonts.googleapis.com/css2?family=Hubot+Sans:wght@400;700&display=swap');
+
+/* Form Container */
+#passwordForm {
+    background: linear-gradient(45deg, #6a1b9a, #ab47bc); /* تدرج لوني عصري وجنوني */
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3); /* تأثير الظل العميق */
+    text-align: center;
+    max-width: 420px;
+    margin: auto;
+    border: none;
+    opacity: 0;
+    animation: fadeIn 1s ease-out forwards; /* تأثير انسيابي عند تحميل النموذج */
+    font-family: 'Hubot Sans', sans-serif; /* استخدام الخط Hubot Sans */
+}
+
+/* تأثير الحركة عند ظهور النموذج */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Title - كلمة المرور */
+#passwordForm h2 {
+    font-family: 'Hubot Sans', sans-serif;
+    color: #fff;  /* لون النص الأبيض */
+    font-size: 30px;
+    margin-bottom: 25px;
+    animation: slideInText 2s ease-out forwards; /* حركة نصية لعنوان كلمة المرور */
+    letter-spacing: 2px; /* زيادة التباعد بين الحروف */
+}
+
+/* تأثير الحركة للكلمة "كلمة المرور" */
+@keyframes slideInText {
+    0% {
+        transform: translateX(-100px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Input Field */
+#passwordForm input[type="password"] {
+    padding: 18px;
+    margin-top: 30px;
+    font-size: 20px;
+    width: 100%;
+    border: 3px solid #fff;
+    border-radius: 15px;
+    text-align: center;
+    background-color: #f2f2f2;
+    color: #333;
+    transition: all 0.4s ease-in-out;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); /* تأثير ظل ناعم */
+}
+
+/* تأثير عند التركيز على حقل كلمة المرور */
+#passwordForm input[type="password"]:focus {
+    border-color: #ab47bc;  /* تغيير اللون إلى البنفسجي */
+    box-shadow: 0 0 20px rgba(171, 71, 188, 0.5); /* تأثير ظل عند التركيز */
+    transform: scale(1.05); /* تكبير بسيط عند التركيز */
+}
+
+/* Submit Button */
+#passwordForm button {
+    margin-top: 35px;
+    padding: 15px 30px;
+    font-size: 20px;
+    background-color: #00bcd4; /* زر باللون الأزرق السماوي */
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease, transform 0.2s ease;
+    animation: pulse 1.5s ease infinite; /* حركة نبضية للزر */
+}
+
+/* تأثير الحركة عند مرور الفأرة على الزر */
+#passwordForm button:hover {
+    background-color: #0097a7; /* تغيير اللون عند التمرير */
+    transform: scale(1.1); /* تكبير الزر عند التمرير */
+}
+
+/* حركة نبضية للزر */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Main Dashboard */
+#dashboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(45deg, #ff6f00, #ffb300); /* تدرج لوني جنوني للخلفية */
+    padding: 20px;
+    animation: slideIn 1.5s ease-out forwards; /* حركة انزلاق للنموذج */
+}
+
+/* تأثير الحركة عند ظهور لوحة التحكم */
+@keyframes slideIn {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* نص تلميحات أو تعليمات في النموذج */
+#passwordForm p {
+    font-size: 40px;
+    color: #fff;
+    margin-top: 20px;
+    animation: fadeInText 2s ease-out forwards; /* تأثير نصي متدرج */
+}
+
+
+/* تأثير الحركة لنص التعليمات */
+@keyframes fadeInText {
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
     </style>
 </head>
 <body>
+         <div id="passwordPage">
+        <div id="passwordForm">
+            <h2> 𝖕𝖆𝖘𝖘𝖜𝖔𝖗𝖉 ▄︻┻═┳一一一</h2>
+            <input type="password" id="passwordInput">
+            <button onclick="checkPassword()">﷽</button>
+            <div id="passwordError" style="color: red;"></div>
+        </div>
+    </div>
+
 
     <div class="sidebar">
-        <h2>Project X</h2>
+        <h2>𝓟𝓻𝓸𝓳𝓮𝓬𝓽 𝓧 𓂀</h2>
         <ul>
-            <li><a href="#calculator" onclick="showCalculator()"> VAD TOTAL</a></li>
-            <li><a href="#calculator-2" onclick="showCalculator2()"> VAD ART </a></li>
+            <li><a href="#calculator" onclick="showCalculator()">𝐕𝐀𝐃 𝐓𝐎𝐓𝐀𝐋</a></li>
+            <li><a href="#calculator-2" onclick="showCalculator2()">𝐕𝐀𝐃 𝐀𝐑𝐓</a></li>
 
         </ul>
     </div>
 
     <div class="content" id="calculator">  
-        <h1>Calculator</h1>
+        <h1>☣𓄃𖣔𖤓</h1>
 		<h1>
     <button id="clearButton" onclick="clearInputs1()" style="
         font-size: 16px;
@@ -829,10 +1047,50 @@ function calculate2() {
             document.getElementById('mfResult2').textContent = '0.00';
             document.getElementById('vadResult2').textContent = '0.00';
         }
+		document.getElementById('passwordPage').style.display = 'flex';
+
+
+function checkPassword() {
+    const password = document.getElementById('passwordInput').value.toLowerCase(); // تحويل كلمة المرور إلى حروف صغيرة
+    if (password === "df" || password === "df") {  // تحقق من الكلمتين
+        // إخفاء صفحة كلمة المرور
+        document.getElementById('passwordPage').style.display = 'none';
+
+        // إظهار الشريط الجانبي ومحتوى الآلة الحاسبة الافتراضية
+        document.querySelector('.sidebar').style.display = 'block';
+        document.getElementById('calculator').style.display = 'block'; // أو 'calculator-2' حسب الآلة الحاسبة الافتراضية
+    } else {
+        // عرض رسالة خطأ
+        document.getElementById('passwordError').textContent = "ᴇʀʀᴇᴜʀ";
+    }
+}
+ 
+ 
+let currentSection = 1;
+
+// ربط الحدث بالـ document
+document.addEventListener('keydown', function(event) {
+    if (event.altKey) {
+        const calculator = document.getElementById('calculator');
+        const calculator2 = document.getElementById('calculator-2');
+
+        if (currentSection === 1) {
+            calculator.style.display = 'none';
+            calculator2.style.display = 'block';
+            currentSection = 2; 
+        } else { 
+            calculator2.style.display = 'none';
+            calculator.style.display = 'block';
+            currentSection = 1;
+        }
+    }
+});
+
 		
     </script>
 </body>
 </html> 
+
 
 
 
