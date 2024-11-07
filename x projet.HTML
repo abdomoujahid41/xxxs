@@ -9,48 +9,70 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to bottom, #ffffff, #f8e6ee, #f4c8da, #f0aacc);
+background-color: rgb(135, 206, 250);
+
+
+}
+.sidebar {
+    width: 180px;
+    background-color: #2f3257; /* لون داكن أكثر للاحترافية */
+    padding: 10px;
+    position: fixed;
+    height: 100vh; /* ارتفاع الشاشة بالكامل */
+    top: 0;
+    left: 0;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3); /* ظل لجعل الشريط بارزًا */
 }
 
-        .sidebar {
-            width: 140px;
-            background-color: #434779;
-            padding: 2px;
-            position: fixed;
-            height: 200vh; /* ارتفاع كامل الشاشة */
-            top: 0;
-            left: 0;
-        }
-        .sidebar h2 {
-            margin-top: 0;
-        }
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        .sidebar li {
-            margin-bottom: 6px;
-        }
-        .sidebar a {
-            display: block;
-            padding: 20px;
-            text-decoration: none;
-            color: black;
-            background-color: #904779;
-            border-radius: 6px;
-        }
-        .sidebar a:hover {
-            background-color: #cb0179;
-        }
+.sidebar h2 {
+    margin-top: 0;
+    color: #fff; /* لون النص الأبيض */
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    margin-bottom: 10px;
+}
+
+.sidebar a {
+    display: block;
+    padding: 15px;
+    text-decoration: none;
+    color: #fff; /* لون نص الأبيض */
+    background-color: #5c5e98; /* لون الخلفية الأساسي للأزرار */
+    border-radius: 6px;
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* تأثير انتقال */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15); /* ظل خفيف للأزرار */
+}
+
+.sidebar a:hover {
+    background-color: #797bbe; /* تغيير لون الخلفية عند التمرير */
+    transform: scale(1.05); /* تكبير خفيف عند التمرير */
+}
+
+.sidebar a:active {
+    background-color: #434779; /* لون أغمق عند النقر */
+    transform: scale(0.98); /* تصغير خفيف عند النقر */
+}
+
         .content {
-            margin-left: 140px; /* مسافة من الجانب الأيسر */
+            margin-left: 200px; /* مسافة من الجانب الأيسر */
             padding: 10px;
             margin-top: 10px; /* مسافة من أعلى */
         }
         .container {
             position: relative;
             width: 1000px; /* عرض الحاوية */
-            height: 400px; /* ارتفاع الحاوية */
+            height: 1000px; /* ارتفاع الحاوية */
             border: 3px solid green;
             padding: 20px;
             box-sizing: border-box;
@@ -240,6 +262,17 @@ body {
 			
 			
         }
+		result-button {
+            padding: 5px 10px;
+            margin-left: 10px;
+            cursor: pointer;
+            background-color: #4CAF50; /* لون زر النسخ الأخضر */
+            color: white;
+            border: none;
+        }
+        .result-button.active {
+            background-color: #4CAF50; /* اللون الأخضر */
+        }
 		
 		
     </style>
@@ -257,6 +290,26 @@ body {
 
     <div class="content" id="calculator">  
         <h1>Calculator</h1>
+		<h1>
+    <button id="clearButton" onclick="clearInputs1()" style="
+        font-size: 16px;
+        padding: 10px 20px;
+        background-color: black; /* خلفية سوداء */
+        border: none;
+        border-radius: 6px;
+        color: white; /* كتابة بيضاء */
+        font-weight: bold;
+        cursor: pointer;
+        margin-left: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease;
+    "
+    onmouseover="this.style.transform='scale(1.05)';"
+    onmouseout="this.style.transform='scale(1)';">
+        RESET
+    </button>
+</h1>
+
 
         <div class="container">
 
@@ -405,6 +458,23 @@ body {
              <div class="column">			 
 			   </br>
                </br>
+    <button id="clearButton" onclick="clearInputs()" style="
+        font-size: 30px;
+        padding: 20px 40px;
+        background-color: black; /* خلفية سوداء */
+        border: none;
+        border-radius: 6px;
+        color: white; /* كتابة بيضاء */
+        font-weight: bold;
+        cursor: pointer;
+        margin-left: 10px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s ease;
+    "
+    onmouseover="this.style.transform='scale(1.05)';"
+    onmouseout="this.style.transform='scale(1)';">
+        RESET
+    </button>	
 			   </br> 
 			   </br>
 			   </br> 
@@ -413,7 +483,8 @@ body {
 			   </br>
 			   </br>
 			   </br>
-			    <span>C O F</span>
+                	   
+			    <span>C O F</span>				
              <input type="number" id="input21" oninput="calculate2()">
              <button onclick="handlePaste()">Paste</button>
              </div>
@@ -428,126 +499,127 @@ body {
                 </div>
                </br> 
 			   </br>
-                <div class="result" id="result1">
-                    <div class="input-field"> 
-                        <label>VAD 1:</label> <span class="result-value" id="resultValue1">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue1')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result2">
-                    <div class="input-field"> 
-                        <label>VAD 2:</label> <span class="result-value" id="resultValue2">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue2')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result3">
-                    <div class="input-field"> 
-                        <label>VAD 3:</label> <span class="result-value" id="resultValue3">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue3')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result4">
-                    <div class="input-field"> 
-                        <label>VAD 4:</label> <span class="result-value" id="resultValue4">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue4')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result5">
-                    <div class="input-field"> 
-                        <label>VAD 5:</label> <span class="result-value" id="resultValue5">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue5')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result6">
-                    <div class="input-field"> 
-                        <label>VAD 6:</label> <span class="result-value" id="resultValue6">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue6')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result7">
-                    <div class="input-field"> 
-                        <label>VAD 7:</label> <span class="result-value" id="resultValue7">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue7')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result8">
-                    <div class="input-field"> 
-                        <label>VAD 8:</label> <span class="result-value" id="resultValue8">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue8')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result9">
-                    <div class="input-field"> 
-                        <label>VAD 9:</label> <span class="result-value" id="resultValue9">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue9')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result10">
-                    <div class="input-field"> 
-                        <label>VAD 10:</label> <span class="result-value" id="resultValue10">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue10')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result11">
-                    <div class="input-field"> 
-                        <label>VAD 11:</label> <span class="result-value" id="resultValue11">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue11')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result12">
-                    <div class="input-field"> 
-                        <label>VAD 12:</label> <span class="result-value" id="resultValue12">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue12')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result13">
-                    <div class="input-field"> 
-                        <label>VAD 13:</label> <span class="result-value" id="resultValue13">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue13')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result14">
-                    <div class="input-field"> 
-                        <label>VAD 14:</label> <span class="result-value" id="resultValue14">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue14')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result15">
-                    <div class="input-field"> 
-                        <label>VAD 15:</label> <span class="result-value" id="resultValue15">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue15')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result16">
-                    <div class="input-field"> 
-                        <label>VAD 16:</label> <span class="result-value" id="resultValue16">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue16')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result17">
-                    <div class="input-field"> 
-                        <label>VAD 17:</label> <span class="result-value" id="resultValue17">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue17')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result18">
-                    <div class="input-field"> 
-                        <label>VAD 18:</label> <span class="result-value" id="resultValue18">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue18')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result19">
-                    <div class="input-field"> 
-                        <label>VAD 19:</label> <span class="result-value" id="resultValue19">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue19')">Copy</button>
-                    </div>
-                </div>
-                <div class="result" id="result20">
-                    <div class="input-field"> 
-                        <label>VAD 20:</label> <span class="result-value" id="resultValue20">0</span>
-                        <button class="result-button" onclick="copyToClipboard('resultValue20')">Copy</button>
-                    </div>
-                
+<div class="result" id="result1">
+    <div class="input-field"> 
+        <label>VAD 1:</label> <span class="result-value" id="resultValue1">0</span>
+        <button class="result-button" id="copyButton1" onclick="copyToClipboard('resultValue1', 'copyButton1')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result2">
+    <div class="input-field"> 
+        <label>VAD 2:</label> <span class="result-value" id="resultValue2">0</span>
+        <button class="result-button" id="copyButton2" onclick="copyToClipboard('resultValue2', 'copyButton2')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result3">
+    <div class="input-field"> 
+        <label>VAD 3:</label> <span class="result-value" id="resultValue3">0</span>
+        <button class="result-button" id="copyButton3" onclick="copyToClipboard('resultValue3', 'copyButton3')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result4">
+    <div class="input-field"> 
+        <label>VAD 4:</label> <span class="result-value" id="resultValue4">0</span>
+        <button class="result-button" id="copyButton4" onclick="copyToClipboard('resultValue4', 'copyButton4')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result5">
+    <div class="input-field"> 
+        <label>VAD 5:</label> <span class="result-value" id="resultValue5">0</span>
+        <button class="result-button" id="copyButton5" onclick="copyToClipboard('resultValue5', 'copyButton5')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result6">
+    <div class="input-field"> 
+        <label>VAD 6:</label> <span class="result-value" id="resultValue6">0</span>
+        <button class="result-button" id="copyButton6" onclick="copyToClipboard('resultValue6', 'copyButton6')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result7">
+    <div class="input-field"> 
+        <label>VAD 7:</label> <span class="result-value" id="resultValue7">0</span>
+        <button class="result-button" id="copyButton7" onclick="copyToClipboard('resultValue7', 'copyButton7')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result8">
+    <div class="input-field"> 
+        <label>VAD 8:</label> <span class="result-value" id="resultValue8">0</span>
+        <button class="result-button" id="copyButton8" onclick="copyToClipboard('resultValue8', 'copyButton8')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result9">
+    <div class="input-field"> 
+        <label>VAD 9:</label> <span class="result-value" id="resultValue9">0</span>
+        <button class="result-button" id="copyButton9" onclick="copyToClipboard('resultValue9', 'copyButton9')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result10">
+    <div class="input-field"> 
+        <label>VAD 10:</label> <span class="result-value" id="resultValue10">0</span>
+        <button class="result-button" id="copyButton10" onclick="copyToClipboard('resultValue10', 'copyButton10')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result11">
+    <div class="input-field"> 
+        <label>VAD 11:</label> <span class="result-value" id="resultValue11">0</span>
+        <button class="result-button" id="copyButton11" onclick="copyToClipboard('resultValue11', 'copyButton11')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result12">
+    <div class="input-field"> 
+        <label>VAD 12:</label> <span class="result-value" id="resultValue12">0</span>
+        <button class="result-button" id="copyButton12" onclick="copyToClipboard('resultValue12', 'copyButton12')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result13">
+    <div class="input-field"> 
+        <label>VAD 13:</label> <span class="result-value" id="resultValue13">0</span>
+        <button class="result-button" id="copyButton13" onclick="copyToClipboard('resultValue13', 'copyButton13')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result14">
+    <div class="input-field"> 
+        <label>VAD 14:</label> <span class="result-value" id="resultValue14">0</span>
+        <button class="result-button" id="copyButton14" onclick="copyToClipboard('resultValue14', 'copyButton14')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result15">
+    <div class="input-field"> 
+        <label>VAD 15:</label> <span class="result-value" id="resultValue15">0</span>
+        <button class="result-button" id="copyButton15" onclick="copyToClipboard('resultValue15', 'copyButton15')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result16">
+    <div class="input-field"> 
+        <label>VAD 16:</label> <span class="result-value" id="resultValue16">0</span>
+        <button class="result-button" id="copyButton16" onclick="copyToClipboard('resultValue16', 'copyButton16')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result17">
+    <div class="input-field"> 
+        <label>VAD 17:</label> <span class="result-value" id="resultValue17">0</span>
+        <button class="result-button" id="copyButton17" onclick="copyToClipboard('resultValue17', 'copyButton17')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result18">
+    <div class="input-field"> 
+        <label>VAD 18:</label> <span class="result-value" id="resultValue18">0</span>
+        <button class="result-button" id="copyButton18" onclick="copyToClipboard('resultValue18', 'copyButton18')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result19">
+    <div class="input-field"> 
+        <label>VAD 19:</label> <span class="result-value" id="resultValue19">0</span>
+        <button class="result-button" id="copyButton19" onclick="copyToClipboard('resultValue19', 'copyButton19')">Copy</button>
+    </div>
+</div>
+<div class="result" id="result20">
+    <div class="input-field"> 
+        <label>VAD 20:</label> <span class="result-value" id="resultValue20">0</span>
+        <button class="result-button" id="copyButton20" onclick="copyToClipboard('resultValue20', 'copyButton20')">Copy</button>
+    </div>
+</div>
+
             </div>
         </div>
     </div>
@@ -714,6 +786,49 @@ function calculate2() {
         // لتنفيذ الدوال المقابلة عند النقر
         document.querySelector('.sidebar a[href="#calculator"]').onclick = showCalculator;
         document.querySelector('.sidebar a[href="#calculator-2"]').onclick = showCalculator2;
+		
+		         function copyToClipboard(elementId, buttonId) {  // Corrected function - now takes buttonId
+            const textToCopy = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(textToCopy);
+
+            const copyButtons = document.querySelectorAll('.result-button');
+            copyButtons.forEach(button => button.classList.remove('active'));
+            const currentButton = document.getElementById(buttonId);
+            if (currentButton) { // Check if the button exists
+                currentButton.classList.add('active');
+            }
+
+        }
+		 function clearInputs() {
+            for (let i = 1; i <= 20; i++) {
+                document.getElementById(`input${i}`).value = '';
+                document.getElementById(`resultValue${i}`).textContent = '0.00'; // أو أي قيمة افتراضية أخرى
+            }
+            document.getElementById(`input21`).value = '';
+
+            document.getElementById('totalMF').textContent = '0.00';
+            document.getElementById('totalVAD').textContent = '0.00';
+
+                const copyButtons = document.querySelectorAll('.result-button'); // احصل على جميع أزرار النسخ
+                copyButtons.forEach(button => button.classList.remove('active'));  // قم بإزالة اللون من جميع الأزرار
+        }
+		  function clearInputs1() {
+            document.getElementById('mf').value = '';
+            document.getElementById('fret').value = '';
+            document.getElementById('acc').value = '';
+            document.getElementById('VAA').value = '';
+
+            document.getElementById('assResult').textContent = '0';
+            document.getElementById('vadResult').textContent = '0';
+            document.getElementById('COFFResult').textContent = '0.0000';
+            document.getElementById('cofResult').textContent = '0.0000';
+            document.getElementById('mfTxResult').textContent = '0';
+            document.getElementById('errorLabel').textContent = '';
+
+             // مسح حقول النتائج في القسم الثاني أيضًا:
+            document.getElementById('mfResult2').textContent = '0.00';
+            document.getElementById('vadResult2').textContent = '0.00';
+        }
 		
     </script>
 </body>
