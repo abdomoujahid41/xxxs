@@ -1071,7 +1071,8 @@ let currentSection = 1;
 
 // ربط الحدث بالـ document
 document.addEventListener('keydown', function(event) {
-    if (event.spacekey) {
+    // التحقق من أن المفتاح الذي تم الضغط عليه هو مفتاح المسافة
+    if (event.key === " " || event.code === "Space") {
         const calculator = document.getElementById('calculator');
         const calculator2 = document.getElementById('calculator-2');
 
