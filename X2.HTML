@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .quiz-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+        }
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .navigation-btn {
+            padding: 10px 15px;
+            border: none;
+            background-color: #aabbff;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 0 10px;
+        }
+        .navigation-btn:hover {
+            background-color: #eebbff;
+        }
+        .phrase-container {
+            margin: 20px 0;
+            font-size: 1.2em;
+            direction: rtl;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #aabbff;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #eebbff;
+        }
+        #progress {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        #correct-answer {
+            display: none;
+            color: #d9534f;
+            margin-top: 10px;
+        }
+        #results {
+            margin-top: 20px;
+            font-size: 1em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <main class="quiz-container">
+        <div class="header">
+            <button id="prev-btn" class="navigation-btn" disabled>&#8592;</button>
+            <h1>Email Quiz</h1>
+            <button id="next-btn" class="navigation-btn">&#8594;</button>
+        </div>
+        <div class="phrase-container">
+            <p id="arabic-phrase"></p>
+        </div>
+        <input type="text" id="francais-traduction" placeholder="Enter français traduction">
+        <button id="submit-btn">valider</button>
+        <div id="progress"></div>
+        <div id="correct-answer"></div>
+        <div id="results"></div>
+    </main>
+    <script>
+        const phrases = [
+            { arabic: "أرجو منكم التفضل بالاطلاع على المرفق", francais: "Je vous prie de bien vouloir trouver ci joint" },
+            { arabic: "أرجو منكم التفضل بتأكيد", francais: "Je vous prie de bien vouloir confirmer..." },
+            { arabic: "نشكركم على تفهمكم", francais: "Nous vous remercions pour votre compréhension" },
+            { arabic: "يرجى منكم التفضل بإبلاغنا بـ", francais: "Merci de bien vouloir nous informer de..." },
+            { arabic: "نشكركم على العناية التي أوليتموها لهذا الطلب.", francais: "Nous vous remercions de l'attention portée à cette demande" },
+            { arabic: "نحن في خدمتكم لأي معلومات إضافية", francais: "Nous restons à votre disposition pour toute information complémentaire" },
+            { arabic: "أرجو قبول فائق الاحترام", francais: "Je vous prie d'agréer, l'expression de mes salutations distinguées" },
+            { arabic: "في انتظار ردكم", francais: "Dans l'attente de votre retour" },
+            { arabic: "شكراً على تعاونكم وعلى سرعة استجابتكم", francais: "Merci de votre coopération et de votre réactivité" },
+            { arabic: "أشكركم على الاهتمام الذي ستولونه لطلبي", francais: "Je vous remercie de l'attention que vous porterez à ma demande" },
+            { arabic: "أرجو منكم التفضل بالقيام بـ...", francais: "Je vous prie de bien vouloir procéder à..." },
+            { arabic: "لأي معلومات إضافية، لا تترددوا في الاتصال بي", francais: "Pour toute information complémentaire, n'hésitez pas à me contacter" },
+            { arabic: "أود إعلامكم بـ...", francais: "Je tiens à vous informer que" },
+            { arabic: "أشكركم على سرعتكم في الرد", francais: "Je vous remercie de votre promptitude à répondre" },
+            { arabic: "أنا في خدمتكم لأي استفسار", francais: "Je reste à votre disposition pour toute question" },
+            { arabic: "نرجو منكم التفضل بإرسال", francais: "Nous vous prions de bien vouloir nous faire parvenir..." },
+            { arabic: "ننشكركم على التفضل بـ", francais: "Nous vous remercions de bien vouloir..." },
+            { arabic: "نرجو منكم أن تقبلوا اعتذارنا عن", francais: "Nous vous prions de nous excuser pour..." },
+            { arabic: "تفضلوا بقبول فائق احترامي", francais: "Veuillez agréer, l'expression de mes salutations respectueuses" },
+            { arabic: "أشكركم مسبقًا على تعاونكم", francais: "Je vous remercie par avance pour votre collaboration" },
+            { arabic: "أكتب إليكم بخصوص اختلاف تم ملاحظته بين...", francais: "Je vous écris concernant une différence constatée entre..." },
+            { arabic: "هل يمكنكم تزويدي بمزيد من المعلومات حول النقاط التالية", francais: "Pourriez-vous me fournir davantage d'informations sur les points suivants" },
+            { arabic: "Pourriez-vous examiner cette différence et me tenir informer ?", francais: "Pourriez-vous examiner cette différence et me tenir informer ?" },
+            { arabic: "للبدء في الإجراءات الجمركية، نرجو منكم التفضل بإرسال...", francais: "Afin d'entamer les procédures douanières, nous vous prions de bien vouloir nous transmettre...: les dates de disponibilité, les moyens de paiement disponibles ?" },
+            { arabic: "بعد مراجعتي للفاتورة، لاحظت أن...", francais: "Suite à ma revue de la facture, j’ai remarqué que..." },
+            { arabic: "هل لديكم معلومات إضافية عن هذا الموضوع؟", francais: "Auriez-vous plus d'informations sur ce sujet ?" }
+        ];
+
+        let currentPhraseIndex = 0;
+        let wrongAttempts = 0;
+        let correctAnswers = 0;
+        let incorrectAnswers = 0;
+        let isSubmitting = false;
+
+        function displayPhrase() {
+            if (currentPhraseIndex < phrases.length) {
+                const phraseNumber = currentPhraseIndex + 1;
+                const arabicText = phrases[currentPhraseIndex].arabic;
+                const phraseDisplay = `<span dir="ltr">${phraseNumber}.</span>\u00A0${arabicText}`;
+                document.getElementById('arabic-phrase').innerHTML = phraseDisplay;
+                document.getElementById('progress').innerText = `Phrase ${phraseNumber} of ${phrases.length}`;
+                document.getElementById('correct-answer').style.display = "none";
+                document.getElementById('francais-traduction').disabled = false;
+                document.getElementById('submit-btn').disabled = false;
+                updateNavigationButtons();
+            } else {
+                document.getElementById('arabic-phrase').innerText = "";
+                document.getElementById('progress').innerText = "";
+                document.getElementById('francais-traduction').style.display = "none";
+                document.getElementById('submit-btn').style.display = "none";
+                showResults();
+            }
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prev-btn').disabled = currentPhraseIndex <= 0;
+            document.getElementById('next-btn').disabled = currentPhraseIndex >= phrases.length - 1;
+        }
+
+function removePunctuation(str) {
+    return str.replace(/[?.!(),_-]/g, '').replace(/'/g, ' ');
+}
+
+        function removeDiacritics(str) {
+            return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        }
+
+        function normalizeSpaces(str) {
+            return str.replace(/\s+/g, '');
+        }
+
+        document.getElementById('francais-traduction').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                document.getElementById('submit-btn').click();
+            }
+        });
+
+        document.getElementById('submit-btn').addEventListener('click', function() {
+            if (isSubmitting) return;
+            isSubmitting = true;
+            document.getElementById('submit-btn').disabled = true;
+
+            const usertraduction = document.getElementById('francais-traduction').value;
+            const correcttraduction = phrases[currentPhraseIndex].francais;
+
+            let userInputProcessed = removePunctuation(usertraduction).toLowerCase();
+            let correctAnswerProcessed = removePunctuation(correcttraduction).toLowerCase();
+            userInputProcessed = removeDiacritics(userInputProcessed);
+            correctAnswerProcessed = removeDiacritics(correctAnswerProcessed);
+            userInputProcessed = normalizeSpaces(userInputProcessed);
+            correctAnswerProcessed = normalizeSpaces(correctAnswerProcessed);
+
+            if (userInputProcessed === correctAnswerProcessed) {
+                correctAnswers++;
+                wrongAttempts = 0;
+                currentPhraseIndex++;
+                displayPhrase();
+                document.getElementById('francais-traduction').value = '';
+                isSubmitting = false;
+                document.getElementById('submit-btn').disabled = false;
+            } else {
+                wrongAttempts++;
+                if (wrongAttempts >= 3) {
+                    incorrectAnswers++;
+                    document.getElementById('correct-answer').innerText = `Correct answer is: ${correcttraduction}`;
+                    document.getElementById('correct-answer').style.display = "block";
+                    document.getElementById('francais-traduction').disabled = true;
+                    setTimeout(() => {
+                        wrongAttempts = 0;
+                        currentPhraseIndex++;
+                        displayPhrase();
+                        document.getElementById('francais-traduction').value = '';
+                        document.getElementById('francais-traduction').disabled = false;
+                        document.getElementById('submit-btn').disabled = false;
+                        isSubmitting = false;
+                    }, 3000);
+                } else {
+                    alert(`Incorrect. You have ${3 - wrongAttempts} attempts left.`);
+                    isSubmitting = false;
+                    document.getElementById('submit-btn').disabled = false;
+                }
+            }
+        });
+
+        document.getElementById('next-btn').addEventListener('click', function() {
+            currentPhraseIndex++;
+            displayPhrase();
+        });
+
+        document.getElementById('prev-btn').addEventListener('click', function() {
+            currentPhraseIndex--;
+            displayPhrase();
+        });
+
+        function showResults() {
+            const totalPhrases = phrases.length;
+            document.getElementById('results').innerText = `Results:<br>Correct Answers: ${correctAnswers}<br>Incorrect Answers: ${incorrectAnswers}`;
+        }
+
+        displayPhrase();
+    </script>
+</body>
+</html>

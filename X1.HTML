@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <title>Arabic Phrases Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .quiz-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+        }
+        .header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .navigation-btn {
+            padding: 10px 15px;
+            border: none;
+            background-color: #28a745;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 0 10px;
+        }
+        .navigation-btn:hover {
+            background-color: #218838;
+        }
+        .phrase-container {
+            margin: 20px 0;
+            font-size: 1.2em;
+            direction: rtl;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #28a745;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #progress {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        #correct-answer {
+            display: none;
+            color: #d9534f;
+            margin-top: 10px;
+        }
+        #results {
+            margin-top: 20px;
+            font-size: 1em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <main class="quiz-container">
+        <div class="header">
+            <button id="prev-btn" class="navigation-btn" disabled>&#8592;</button>
+            <h1>Arabic Phrases Quiz</h1>
+            <button id="next-btn" class="navigation-btn">&#8594;</button>
+        </div>
+        <div class="phrase-container">
+            <p id="arabic-phrase"></p>
+        </div>
+        <input type="text" id="english-translation" placeholder="Enter English translation">
+        <button id="submit-btn">Submit Answer</button>
+        <div id="progress"></div>
+        <div id="correct-answer"></div>
+        <div id="results"></div>
+    </main>
+    <script>
+    const phrases = [
+    { arabic: "أنا ذاهب إلى المتجر.", english: "I am going to the store." },
+    { arabic: "إنها تقرأ كتابًا.", english: "She is reading a book." },
+    { arabic: "يلعب كرة القدم كل عطلة نهاية الأسبوع.", english: "He plays soccer every weekend." },
+    { arabic: "نحن نتناول العشاء الساعة السابعة مساءً.", english: "We are having dinner at 7 PM." },
+    { arabic: "إنهم يدرسون للامتحان.", english: "They are studying for the exam." },
+    { arabic: "القطة تنام على الأريكة.", english: "The cat is sleeping on the couch." },
+    { arabic: "الشمس تشرق من الشرق.", english: "The sun rises in the east." },
+    { arabic: "القمر يضيء في الليل.", english: "The moon shines at night." },
+    { arabic: "الماء يغلي عند 212 درجة فهرنهايت.", english: "Water boils at 212 degrees Fahrenheit." },
+    { arabic: "القطار يغادر الساعة الثامنة صباحًا.", english: "The train leaves at 8 AM." },
+    { arabic: "أحتاج إلى شراء بعض البقالة.", english: "I need to buy some groceries." },
+    { arabic: "إنها تتحدث ثلاث لغات.", english: "She speaks three languages." },
+    { arabic: "إنه صديق جيد.", english: "He is a good friend." },
+    { arabic: "نحن ذاهبون في إجازة في الأسبوع القادم.", english: "We are going on vacation next week." },
+    { arabic: "إنهم يبنون منزلًا جديدًا.", english: "They are building a new house." },
+    { arabic: "الزهور تتفتح في الربيع.", english: "The flowers are blooming in spring." },
+    { arabic: "المطر يهطل بشدة.", english: "The rain is falling heavily." },
+    { arabic: "الرياح تهب بقوة.", english: "The wind is blowing strongly." },
+    { arabic: "الكلب ينبح بصوت عالٍ.", english: "The dog is barking loudly." },
+    { arabic: "الطفل يبكي.", english: "The baby is crying." },
+    { arabic: "أنا متعب.", english: "I am tired." },
+    { arabic: "إنها سعيدة.", english: "She is happy." },
+    { arabic: "إنه حزين.", english: "He is sad." },
+    { arabic: "نحن متحمسون.", english: "We are excited." },
+    { arabic: "إنهم غاضبون.", english: "They are angry." },
+    { arabic: "الطعام لذيذ.", english: "The food is delicious." },
+    { arabic: "الفيلم ممل.", english: "The movie is boring." },
+    { arabic: "الموسيقى جميلة.", english: "The music is beautiful." },
+    { arabic: "الكتاب مثير للاهتمام.", english: "The book is interesting." },
+    { arabic: "السيارة سريعة.", english: "The car is fast." },
+    { arabic: "الدراجة بطيئة.", english: "The bike is slow." },
+    { arabic: "الكمبيوتر جديد.", english: "The computer is new." },
+    { arabic: "الهاتف قديم.", english: "The phone is old." },
+    { arabic: "الأحذية مريحة.", english: "The shoes are comfortable." },
+    { arabic: "الفستان جميل.", english: "The dress is pretty." },
+    { arabic: "القبعة في الموضة.", english: "The hat is stylish." },
+    { arabic: "الحقيبة ثقيلة.", english: "The bag is heavy." },
+    { arabic: "الصندوق خفيف.", english: "The box is light." },
+    { arabic: "الباب مفتوح.", english: "The door is open." },
+    { arabic: "النافذة مغلقة.", english: "The window is closed." },
+    { arabic: "الضوء مضاء.", english: "The light is on." },
+    { arabic: "التلفزيون مطفأ.", english: "The TV is off." },
+    { arabic: "الساعة تدق.", english: "The clock is ticking." },
+    { arabic: "المنبه يرن.", english: "The alarm is ringing." },
+    { arabic: "الجرس يدق.", english: "The bell is chiming." },
+    { arabic: "النار تحترق.", english: "The fire is burning." },
+    { arabic: "الشمعة مشتعلة.", english: "The candle is lit." },
+    { arabic: "القهوة ساخنة.", english: "The coffee is hot." },
+    { arabic: "الشاي بارد.", english: "The tea is cold." },
+    { arabic: "الكعكة حلوة.", english: "The cake is sweet." }
+];
+
+
+    let currentPhraseIndex = 0;
+    let wrongAttempts = 0;
+    let correctAnswers = 0;
+    let incorrectAnswers = 0;
+    let isSubmitting = false;
+
+    function displayPhrase() {
+        if (currentPhraseIndex < phrases.length) {
+            const phraseNumber = currentPhraseIndex + 1;
+            const arabicText = phrases[currentPhraseIndex].arabic;
+            const phraseDisplay = `<span dir="ltr">${phraseNumber}.</span>\u00A0${arabicText}`;
+            document.getElementById('arabic-phrase').innerHTML = phraseDisplay;
+            document.getElementById('progress').innerText = `Phrase ${phraseNumber} of ${phrases.length}`;
+            document.getElementById('correct-answer').style.display = "none";
+            document.getElementById('english-translation').disabled = false;
+            document.getElementById('submit-btn').disabled = false;
+            updateNavigationButtons();
+        } else {
+            document.getElementById('arabic-phrase').innerText = "";
+            document.getElementById('progress').innerText = "";
+            document.getElementById('english-translation').style.display = "none";
+            document.getElementById('submit-btn').style.display = "none";
+            showResults();
+        }
+    }
+
+    function updateNavigationButtons() {
+        document.getElementById('prev-btn').disabled = currentPhraseIndex <= 0;
+        document.getElementById('next-btn').disabled = currentPhraseIndex >= phrases.length - 1;
+    }
+
+    function removePunctuation(str) {
+        return str.replace(/[?.!'()_-]/g, '');
+    }
+
+    function removeDiacritics(str) {
+        return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    }
+
+    function normalizeSpaces(str) {
+        return str.replace(/\s+/g, ' ').trim();
+    }
+
+    // Event listener for Enter key press
+    document.getElementById('english-translation').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            document.getElementById('submit-btn').click();
+        }
+    });
+
+    // Event listener for submit button click
+    document.getElementById('submit-btn').addEventListener('click', function() {
+        if (isSubmitting) return; // Prevent multiple submissions
+        isSubmitting = true;
+        document.getElementById('submit-btn').disabled = true; // Disable the button
+
+        const userTranslation = document.getElementById('english-translation').value;
+        const correctTranslation = phrases[currentPhraseIndex].english;
+
+        let userInputProcessed = removePunctuation(userTranslation).toLowerCase();
+        let correctAnswerProcessed = removePunctuation(correctTranslation).toLowerCase();
+        userInputProcessed = removeDiacritics(userInputProcessed);
+        correctAnswerProcessed = removeDiacritics(correctAnswerProcessed);
+        userInputProcessed = normalizeSpaces(userInputProcessed);
+        correctAnswerProcessed = normalizeSpaces(correctAnswerProcessed);
+
+        if (userInputProcessed === correctAnswerProcessed) {
+            correctAnswers++;
+            wrongAttempts = 0;
+            currentPhraseIndex++;
+            displayPhrase();
+            document.getElementById('english-translation').value = '';
+            isSubmitting = false;
+            document.getElementById('submit-btn').disabled = false;
+        } else {
+            wrongAttempts++;
+            if (wrongAttempts >= 3) {
+                incorrectAnswers++;
+                document.getElementById('correct-answer').innerText = `Correct answer is: ${correctTranslation}`;
+                document.getElementById('correct-answer').style.display = "block";
+                document.getElementById('english-translation').disabled = true;
+                setTimeout(() => {
+                    wrongAttempts = 0;
+                    currentPhraseIndex++;
+                    displayPhrase();
+                    document.getElementById('english-translation').value = '';
+                    document.getElementById('english-translation').disabled = false;
+                    document.getElementById('submit-btn').disabled = false;
+                    isSubmitting = false;
+                }, 3000);
+            } else {
+                alert(`Incorrect. You have ${3 - wrongAttempts} attempts left.`);
+                isSubmitting = false;
+                document.getElementById('submit-btn').disabled = false;
+            }
+        }
+    });
+
+    document.getElementById('next-btn').addEventListener('click', function() {
+        currentPhraseIndex++;
+        displayPhrase();
+    });
+
+    document.getElementById('prev-btn').addEventListener('click', function() {
+        currentPhraseIndex--;
+        displayPhrase();
+    });
+
+    function showResults() {
+        const totalPhrases = phrases.length;
+        document.getElementById('results').innerText = `Results:\nCorrect Answers: ${correctAnswers}\nIncorrect Answers: ${incorrectAnswers}`;
+    }
+
+    displayPhrase();
+    </script>
+</body>
+</html>

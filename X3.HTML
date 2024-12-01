@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genre des Mots</title>
+    <style>
+        /* إعدادات الجسم */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center; /* لضمان أن جميع النصوص في وسط الصفحة */
+        }
+
+        /* تحسين العنوان العام */
+        h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        /* تخصيص عنوان "Niveau" */
+        .level-title {
+            font-size: 2rem; /* زيادة حجم الخط بشكل واضح */
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 20px;
+            text-align: center;
+            padding: 20px 30px;
+            border-radius: 12px;
+            background-color: #ecf0f1;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            width: 60%;
+            margin: 10px auto; /* التوسيط التام */
+            display: inline-block; /* لضمان أن العنوان لا يمدد العرض بشكل غير مرغوب فيه */
+        }
+
+
+        /* تخصيص الكلمات */
+        .word {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #34495e;
+            background-color: #ecf0f1;
+            padding: 20px 40px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* تخصيص الأزرار */
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .buttons button {
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .buttons button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+        }
+
+        /* تخصيص ملاحظات الإجابة */
+        #feedback {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        #feedback.correct {
+            color: #2ecc71; /* اللون الأخضر للنجاح */
+        }
+
+        #feedback.wrong {
+            color: #e74c3c; /* اللون الأحمر للفشل */
+        }
+
+        /* تخصيص النتائج */
+        .results {
+            display: none;
+            padding: 30px;
+            background-color: #ffffff;
+            border: 1px solid #dcdde1;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 80%;
+            max-width: 600px;
+            margin-top: 30px;
+        }
+
+        .results h2 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .results p {
+            font-size: 1.2rem;
+            margin: 10px 0;
+        }
+
+        .results ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .results li {
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .results button {
+            padding: 12px 25px;
+            background-color: #27ae60;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .results button:hover {
+            background-color: #229954;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Genre des Mots</h1>
+
+    <div id="game">
+        <div class="level-title" id="level-title"></div>
+        <div class="word" id="current-word"></div>
+        <div class="buttons">
+<button onclick="checkAnswer('féminin')" style="background-color: #FF66B2; color: white;">la</button>
+<button onclick="checkAnswer('masculin')" style="background-color: #66B2FF; color: white;">le</button>
+        </div>
+        <div id="feedback"></div>
+    </div>
+
+    <div class="results" id="results">
+        <h2>Résultats</h2>
+        <p>Score: <span id="score"></span></p>
+        <p>Erreurs :</p>
+        <ul id="mistakes"></ul>
+        <button onclick="restartGame()">Rejouer</button>
+    </div>
+
+    <script>
+const words = [
+    { mot: "école", genre: "féminin", niveau: 1 },
+    { mot: "maison", genre: "féminin", niveau: 2 },
+    { mot: "pièce", genre: "féminin", niveau: 3 },
+    { mot: "lettre", genre: "féminin", niveau: 4 },
+    { mot: "transport", genre: "masculin", niveau: 5 },
+    { mot: "stage", genre: "masculin", niveau: 6 },
+    { mot: "email", genre: "masculin", niveau: 7 },
+    { mot: "point", genre: "masculin", niveau: 8 },
+    { mot: "information", genre: "féminin", niveau: 9 },
+    { mot: "motivation", genre: "féminin", niveau: 10 },
+    { mot: "page", genre: "féminin", niveau: 11 },
+    { mot: "diplome", genre: "masculin", niveau: 12 },
+    { mot: "contrat", genre: "masculin", niveau: 13 },
+    { mot: "navigateur", genre: "masculin", niveau: 14 },
+    { mot: "article", genre: "féminin", niveau: 15 },
+    { mot: "ordinateur", genre: "masculin", niveau: 16 },
+    { mot: "logiciel", genre: "masculin", niveau: 17 },
+    { mot: "vidéo", genre: "féminin", niveau: 18 },
+    { mot: "document", genre: "masculin", niveau: 19 },
+    { mot: "courriel", genre: "masculin", niveau: 20 },
+    { mot: "connexion", genre: "féminin", niveau: 21 },
+    { mot: "formation", genre: "féminin", niveau: 22 },
+    { mot: "application", genre: "féminin", niveau: 23 },
+    { mot: "facture", genre: "féminin", niveau: 24 },
+    { mot: "formulaire", genre: "masculin", niveau: 25 },
+    { mot: "somme", genre: "féminin", niveau: 26 },
+    { mot: "valeur", genre: "féminin", niveau: 27 },
+    { mot: "annexe", genre: "féminin", niveau: 28 },
+    { mot: "saisie", genre: "féminin", niveau: 29 },
+    { mot: "demande", genre: "féminin", niveau: 30 },
+    { mot: "explication", genre: "féminin", niveau: 31 },
+    { mot: "suivie", genre: "féminin", niveau: 32 },
+    { mot: "ajout", genre: "masculin", niveau: 33 },
+    { mot: "élément", genre: "masculin", niveau: 34 },
+    { mot: "genre", genre: "masculin", niveau: 35 },
+    { mot: "délai", genre: "masculin", niveau: 36 },
+    { mot: "mot", genre: "masculin", niveau: 37 },
+    { mot: "phrase", genre: "féminin", niveau: 38 },
+    { mot: "plan", genre: "masculin", niveau: 39 },
+    { mot: "niveau", genre: "masculin", niveau: 40 },
+    { mot: "reçu", genre: "masculin", niveau: 41 },
+    { mot: "achat", genre: "masculin", niveau: 42 },
+    { mot: "vente", genre: "féminin", niveau: 43 },
+    { mot: "service", genre: "masculin", niveau: 44 },
+    { mot: "accueil", genre: "masculin", niveau: 45 },
+    { mot: "envoie", genre: "masculin", niveau: 46 },
+    { mot: "système", genre: "masculin", niveau: 47 },
+    { mot: "clavier", genre: "masculin", niveau: 48 },
+    { mot: "button", genre: "masculin", niveau: 49 },
+    { mot: "affectation", genre: "féminin", niveau: 50 },
+    { mot: "numero", genre: "masculin", niveau: 51 },
+    { mot: "ligne", genre: "féminin", niveau: 52 },
+    { mot: "tableau", genre: "masculin", niveau: 53 },
+    { mot: "centre", genre: "masculin", niveau: 54 },
+    { mot: "piscine", genre: "féminin", niveau: 55 },
+    { mot: "bassin", genre: "masculin", niveau: 56 },
+    { mot: "développement", genre: "masculin", niveau: 57 },
+    { mot: "respect", genre: "masculin", niveau: 58 },
+    { mot: "formule", genre: "féminin", niveau: 59 },
+    { mot: "certificat", genre: "masculin", niveau: 60 },
+    { mot: "micro", genre: "masculin", niveau: 61 },
+    { mot: "téléphone", genre: "masculin", niveau: 62 },
+    { mot: "règle", genre: "féminin", niveau: 63 },
+    { mot: "cercle", genre: "masculin", niveau: 64 },
+    { mot: "provocation", genre: "féminin", niveau: 65 },
+    { mot: "élimination", genre: "féminin", niveau: 66 },
+    { mot: "carte", genre: "féminin", niveau: 67 },
+    { mot: "voiture", genre: "féminin", niveau: 68 },
+    { mot: "avion", genre: "masculin", niveau: 69 },
+    { mot: "aéroport", genre: "masculin", niveau: 70 },
+    { mot: "pays", genre: "masculin", niveau: 71 },
+    { mot: "jardin", genre: "masculin", niveau: 72 },
+    { mot: "stylo", genre: "masculin", niveau: 73 },
+    { mot: "crayon", genre: "masculin", niveau: 74 },
+    { mot: "prix", genre: "masculin", niveau: 75 },
+    { mot: "femme", genre: "féminin", niveau: 76 },
+    { mot: "bébé", genre: "masculin", niveau: 77 },
+    { mot: "tente", genre: "féminin", niveau: 78 },
+    { mot: "sécurité", genre: "féminin", niveau: 79 },
+    { mot: "stockage", genre: "masculin", niveau: 80 },
+    { mot: "justice", genre: "féminin", niveau: 81 },
+    { mot: "tribune", genre: "féminin", niveau: 82 },
+    { mot: "liquide", genre: "masculin", niveau: 83 },
+    { mot: "dictionnaire", genre: "masculin", niveau: 84 },
+    { mot: "sable", genre: "masculin", niveau: 85 },
+    { mot: "air", genre: "masculin", niveau: 86 },
+    { mot: "oxygène", genre: "masculin", niveau: 87 },
+    { mot: "domaine", genre: "masculin", niveau: 88 },
+    { mot: "définition", genre: "féminin", niveau: 89 },
+    { mot: "économie", genre: "féminin", niveau: 90 },
+    { mot: "énergie", genre: "féminin", niveau: 91 },
+    { mot: "couleur", genre: "féminin", niveau: 92 },
+    { mot: "composition", genre: "féminin", niveau: 93 },
+    { mot: "marteau", genre: "masculin", niveau: 94 },
+    { mot: "chapitre", genre: "masculin", niveau: 95 },
+    { mot: "façon", genre: "féminin", niveau: 96 },
+    { mot: "succès", genre: "masculin", niveau: 97 },
+    { mot: "table", genre: "féminin", niveau: 98 },
+    { mot: "vie", genre: "féminin", niveau: 99 },
+    { mot: "importance", genre: "féminin", niveau: 100 },
+    { mot: "sujet", genre: "masculin", niveau: 101 },
+    { mot: "objet", genre: "masculin", niveau: 102 },
+    { mot: "longueur", genre: "féminin", niveau: 103 },
+    { mot: "seau", genre: "masculin", niveau: 104 },
+    { mot: "grimace", genre: "féminin", niveau: 105 },
+    { mot: "serviette", genre: "féminin", niveau: 106 },
+    { mot: "vis", genre: "féminin", niveau: 107 },
+    { mot: "peinture", genre: "féminin", niveau: 108 },
+    { mot: "vernis", genre: "masculin", niveau: 109 },
+    { mot: "tôle", genre: "féminin", niveau: 110 },
+	 { "mot": "produit", "genre": "masculin", "niveau": 111 },
+  { "mot": "texte", "genre": "masculin", "niveau": 112 },
+  { "mot": "paragraphe", "genre": "masculin", "niveau": 113 },
+  { "mot": "usine", "genre": "féminin", "niveau": 114 },
+  { "mot": "société", "genre": "féminin", "niveau": 115 },
+  { "mot": "roi", "genre": "masculin", "niveau": 116 },
+  { "mot": "filtre", "genre": "masculin", "niveau": 117 },
+  { "mot": "série", "genre": "féminin", "niveau": 118 },
+  { "mot": "épisode", "genre": "masculin", "niveau": 119 },
+  { "mot": "détecteur", "genre": "masculin", "niveau": 120 },
+  { "mot": "condition", "genre": "féminin", "niveau": 121 },
+  { "mot": "carreau", "genre": "masculin", "niveau": 122 },
+  { "mot": "flèche", "genre": "féminin", "niveau": 123 },
+  { "mot": "acceptation", "genre": "féminin", "niveau": 124 },
+  { "mot": "incohérence", "genre": "féminin", "niveau": 125 },
+  { "mot": "papier", "genre": "masculin", "niveau": 126 },
+  { "mot": "ciel", "genre": "masculin", "niveau": 127 },
+  { "mot": "moto", "genre": "féminin", "niveau": 128 },
+  { "mot": "dédouanement", "genre": "masculin", "niveau": 129 },
+  { "mot": "idée", "genre": "féminin", "niveau": 130 },
+  { "mot": "secret", "genre": "masculin", "niveau": 131 },
+  { "mot": "bâton", "genre": "masculin", "niveau": 132 },
+  { "mot": "symbole", "genre": "masculin", "niveau": 133 },
+  { "mot": "conseil", "genre": "masculin", "niveau": 134 },
+  { "mot": "écrou", "genre": "masculin", "niveau": 135 },
+  { "mot": "réseau", "genre": "masculin", "niveau": 136 },
+  { "mot": "cerveau", "genre": "masculin", "niveau": 137 },
+  { "mot": "main", "genre": "féminin", "niveau": 138 },
+  { "mot": "nombre", "genre": "masculin", "niveau": 139 },
+  { "mot": "kilo", "genre": "masculin", "niveau": 140 },
+  { "mot": "horloge", "genre": "féminin", "niveau": 141 },
+  { "mot": "fleur", "genre": "féminin", "niveau": 142 },
+  { "mot": "musique", "genre": "féminin", "niveau": 143 },
+  { "mot": "amitié", "genre": "féminin", "niveau": 144 },
+  { "mot": "miroir", "genre": "masculin", "niveau": 145 },
+  { "mot": "bureau", "genre": "masculin", "niveau": 146 },
+  { "mot": "pont", "genre": "masculin", "niveau": 147 },
+  { "mot": "port", "genre": "masculin", "niveau": 148 },
+  { "mot": "château", "genre": "masculin", "niveau": 149 },
+  { "mot": "arbre", "genre": "masculin", "niveau": 150 },
+  { "mot": "banque", "genre": "féminin", "niveau": 151 },
+  { "mot": "type", "genre": "masculin", "niveau": 152 },
+  { "mot": "date", "genre": "féminin", "niveau": 153 },
+  { "mot": "devise", "genre": "féminin", "niveau": 154 },
+  { "mot": "feuille", "genre": "féminin", "niveau": 155 },
+  { "mot": "état", "genre": "masculin", "niveau": 156 },
+  { "mot": "catégorie", "genre": "féminin", "niveau": 157 },
+  { "mot": "visite", "genre": "féminin", "niveau": 158 },
+  { "mot": "recherche", "genre": "féminin", "niveau": 159 },
+  { "mot": "client", "genre": "masculin", "niveau": 160 },
+  { "mot": "agenda", "genre": "masculin", "niveau": 161 },
+  { "mot": "guerre", "genre": "féminin", "niveau": 162 },
+  { "mot": "situation", "genre": "féminin", "niveau": 163 },
+  { "mot": "site", "genre": "masculin", "niveau": 164 },
+  { "mot": "clic", "genre": "masculin", "niveau": 165 },
+  { "mot": "urgence", "genre": "féminin", "niveau": 166 },
+  { "mot": "vol", "genre": "masculin", "niveau": 167 },
+  { "mot": "bus", "genre": "masculin", "niveau": 168 },
+  { "mot": "téléchargement", "genre": "masculin", "niveau": 169 },
+  { "mot": "serveur", "genre": "masculin", "niveau": 170 },
+  { "mot": "usage", "genre": "masculin", "niveau": 171 },
+  { "mot": "distance", "genre": "féminin", "niveau": 172 },
+  { "mot": "support", "genre": "masculin", "niveau": 173 },
+  { "mot": "communication", "genre": "féminin", "niveau": 174 },
+  { "mot": "espace", "genre": "masculin", "niveau": 175 },
+  { "mot": "qualité", "genre": "féminin", "niveau": 176 },
+  { "mot": "culture", "genre": "féminin", "niveau": 177 },
+  { "mot": "archive", "genre": "féminin", "niveau": 178 },
+  { "mot": "lien", "genre": "masculin", "niveau": 179 },
+  { "mot": "échange", "genre": "masculin", "niveau": 180 },
+  { "mot": "plastique", "genre": "masculin", "niveau": 181 }
+];
+
+
+
+        let currentIndex = 0;
+        let correctAnswers = 0;
+        let mistakes = [];
+
+        function displayWord() {
+            const word = words[currentIndex];
+            const levelTitle = document.getElementById("level-title");
+            levelTitle.textContent = "Niveau " + word.niveau;
+
+            const currentWord = document.getElementById("current-word");
+            currentWord.textContent = word.mot;
+
+            document.getElementById("feedback").textContent = "";
+        }
+
+        function checkAnswer(answer) {
+            const word = words[currentIndex];
+            if (answer === word.genre) {
+                correctAnswers++;
+                document.getElementById("feedback").textContent = "Correct!";
+                document.getElementById("feedback").className = "correct";
+            } else {
+                mistakes.push(word.mot);
+                document.getElementById("feedback").textContent = "Incorrect!";
+                document.getElementById("feedback").className = "wrong";
+            }
+            currentIndex++;
+            if (currentIndex < words.length) {
+                setTimeout(displayWord, 1000);
+            } else {
+                setTimeout(endGame, 1000);
+            }
+        }
+
+        function endGame() {
+            document.getElementById("game").style.display = "none";
+            const results = document.getElementById("results");
+            results.style.display = "block";
+            document.getElementById("score").textContent = correctAnswers + "/" + words.length;
+            const mistakesList = document.getElementById("mistakes");
+            mistakesList.innerHTML = "";
+            mistakes.forEach(mistake => {
+                const li = document.createElement("li");
+                li.textContent = mistake;
+                mistakesList.appendChild(li);
+            });
+        }
+
+        function restartGame() {
+            currentIndex = 0;
+            correctAnswers = 0;
+            mistakes = [];
+            document.getElementById("game").style.display = "block";
+            document.getElementById("results").style.display = "none";
+            displayWord();
+        }
+
+        window.onload = displayWord;
+    </script>
+
+</body>
+</html>
