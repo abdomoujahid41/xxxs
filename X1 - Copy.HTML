@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Résultat</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: "Arial", sans-serif;
+            margin: 50px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #555;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        select, input {
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            width: 160px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            outline: none;
+        }
+
+        #result-container {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #result {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #copyButton, #resetButton, #downloadButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #copyButton:hover, #resetButton:hover, #downloadButton:hover {
+            background-color: #45a049;
+        }
+
+        #resetButton {
+            background-color: #f44336;
+        }
+
+        #resetButton:hover {
+            background-color: #e53935;
+        }
+
+        #downloadButton {
+            background-color: #2196F3;
+        }
+
+        #downloadButton:hover {
+            background-color: #1e88e5;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Générateur de Résultat</h2>
+    
+    <!-- Champs d'entrée alignés horizontalement -->
+    <div class="container">
+        <!-- Premier champ : Liste des options -->
+        <select id="optionSelect" onchange="generateResult()">
+            <option value="" disabled selected>-- Sélectionnez une option --</option>
+            <option value="CASA AERO">CASA AERO</option>
+            <option value="FIGEAC">FIGEAC</option>
+            <option value="SIMRA">SIMRA</option>
+            <option value="UMPM">UMPM</option>
+        </select>
+
+        <!-- Deuxième champ : Saisie de texte -->
+        <input 
+            type="text" 
+            id="inputField1" 
+            placeholder="Champ 2" 
+            oninput="generateResult()">
+
+        <!-- Troisième champ : AWB ou LTA -->
+        <select id="awbOrLta" onchange="generateResult()">
+            <option value="AWB">AWB</option>
+            <option value="LTA">LTA</option>
+        </select>
+
+        <!-- Quatrième champ : Saisie de texte -->
+        <input 
+            type="text" 
+            id="inputField2" 
+            placeholder="Champ 3" 
+            oninput="generateResult()">
+    </div>
+
+    <!-- Résultat final et الأزرار -->
+    <div id="result-container">
+        <div id="result">Le résultat apparaîtra ici</div>
+        <button id="copyButton" onclick="copyToClipboard()">Copier</button>
+        <button id="resetButton" onclick="resetFields()">Réinitialiser</button>
+        <button id="downloadButton" onclick="downloadFile()">Télécharger</button>
+    </div>
+
+    <script>
+        function generateResult() {
+            const option = document.getElementById("optionSelect").value;
+            const input1 = document.getElementById("inputField1").value.trim();
+            const input2 = document.getElementById("inputField2").value.trim();
+            const awbOrLta = document.getElementById("awbOrLta").value;
+
+            // Vérification des valeurs
+            if (!option || input1 === "" || input2 === "") {
+                document.getElementById("result").innerText = "Veuillez remplir tous les champs !";
+                return;
+            }
+
+            // Génération du résultat
+            const result = `${option} _ ${input1} ${awbOrLta} ${input2}`;
+            document.getElementById("result").innerText = result;
+        }
+
+        function copyToClipboard() {
+            const result = document.getElementById("result").innerText;
+            if (result && result !== "Veuillez remplir tous les champs !") {
+                navigator.clipboard.writeText(result).then(() => {
+                    alert("Résultat copié !");
+                }).catch(err => {
+                    alert("Échec de la copie : " + err);
+                });
+            } else {
+                alert("Aucun résultat à copier !");
+            }
+        }
+
+        function resetFields() {
+            // Réinitialiser les champs
+            document.getElementById("optionSelect").value = "";
+            document.getElementById("inputField1").value = "";
+            document.getElementById("inputField2").value = "";
+            document.getElementById("awbOrLta").value = "AWB";
+            document.getElementById("result").innerText = "Le résultat apparaîtra ici";
+        }
+
+       async function downloadFile() {
+    const result = document.getElementById("result").innerText;
+    if (!result || result === "Veuillez remplir tous les champs !") {
+        alert("Aucun résultat à télécharger !");
+        return;
+    }
+
+    // التحقق من دعم المتصفح
+    if (!('showSaveFilePicker' in window)) {
+        alert("Téléchargement non supporté sur ce navigateur. Essayez Chrome ou Edge.");
+        return;
+    }
+
+    try {
+        const handle = await window.showSaveFilePicker({
+            suggestedName: `${result}`,
+            types: [{
+                description: 'Dossier vide',
+                accept: { 'application/x-empty': ['.'] }
+            }]
+        });
+        const writable = await handle.createWritable();
+        await writable.close();
+        alert("Fichier vide téléchargé avec succès !");
+    } catch (error) {
+        console.error("Erreur lors du téléchargement :", error);
+        alert("Une erreur s'est produite pendant le téléchargement.");
+    }
+}
+
+    </script>
+</body>
+</html>
